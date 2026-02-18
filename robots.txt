@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /api/
+Disallow: /chat/
+Allow: /
+
+# Optional: block all crawling if this is temporary
+# Disallow: /
+

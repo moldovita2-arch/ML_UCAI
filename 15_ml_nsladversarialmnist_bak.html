@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+  <title>NSL MNIST Comparison</title>
+    <!-- Import the webpage's stylesheet -->
+
+   <link rel="stylesheet" href="style_adversarial.css">
+</head>
+<body>
+<h1 center>ML: Training and testing in real time</h1>
+<h1>Normal vs Adversarial Neural Networks (GPU)</h1>
+<h2>Training and testing with the original MNIST dataset</h2>
+<h3>NN Configuration : 3 dense layers with 128 x 64 x 10 neurons</h3>
+<h3>Adversarial noise training: 0.1 , batch size 256, epochs  :5 </h3>
+
+<div class="Statuscontainer">
+	<div id="statusnormal" > Preprocessing normal NN...</div>
+	<div id="statusadversarial"> Preprocessing adversarial NN...</div>
+</div>
+
+
+<div class="Chartcontainer">
+	  <canvas id="normalChart" width="800" height="800" style="width:400px; height:400px;" ></canvas>
+	  <canvas id="adversarialChart" width="800" height="800" style="width:400px; height:400px;" ></canvas>
+</div>
+
+
+<div class="Canvascontainer">
+	  <canvas id="normalCanvas" width="800" height="800" style="width:400px; height:400px;"></canvas>
+	  <canvas id="adversarialCanvas" width="800" height="800" style="width:400px; height:400px;"></canvas>
+</div>
+
+
+<script>
+async function loadFashionMNIST() {
+  const BASE_URL = './Datasets/mnist/';
+  const files = {
+    trainImages: 'train-images-idx3-ubyte.gz',
+    trainLabels: 'train-labels-idx1-ubyte.gz',
+    testImages: 't10k-images-idx3-ubyte.gz',
+    testLabels: 't10k-labels-idx1-ubyte.gz'
+  };
+
+  async function fetchGz(url) {
+    const res = await fetch(url);
+    const arrayBuffer = await res.arrayBuffer();
+    return pako.inflate(new Uint8Array(arrayBuffer));
+  }
+
+  function parseImages(buffer) {
+    const headerBytes = 16;
+    const data = new Uint8Array(buffer.buffer);
+    const numImages = (data.length - headerBytes) / (28*28);
+    const images = [];
+    for(let i=0;i<numImages;i++){
+      const start = headerBytes + i*28*28;
+      const img = data.slice(start,start+28*28);
+      images.push(Array.from(img).map(x => x/255));
+    }
+    return tf.tensor2d(images,[numImages,28*28]);
+  }
+
+  function parseLabels(buffer){
+    const headerBytes = 8;
+    const data = new Uint8Array(buffer.buffer);
+    const labels = data.slice(headerBytes);
+    return tf.tensor1d(labels,'int32');
+  }
+
+  const trainImages = parseImages(await fetchGz(BASE_URL+files.trainImages));
+  const trainLabels = parseLabels(await fetchGz(BASE_URL+files.trainLabels));
+  const testImages = parseImages(await fetchGz(BASE_URL+files.testImages));
+  const testLabels = parseLabels(await fetchGz(BASE_URL+files.testLabels));
+
+
+  return {trainImages, trainLabels, testImages, testLabels};
+}
+
+function createModel() {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({units:128,inputShape:[28*28],activation:'relu'}));
+  model.add(tf.layers.dense({units:64,activation:'relu'}));
+  model.add(tf.layers.dense({units:10,activation:'softmax'}));
+  model.compile({optimizer:'adam', loss:'sparseCategoricalCrossentropy', metrics:['accuracy']});
+  return model;
+}
+
+
+function addAdversarialNoise(x, epsilon=0.1){
+  return tf.tidy(() => x.add(tf.randomNormal(x.shape,0,epsilon)).clipByValue(0,1));
+}
+
+async function trainComparison() {
+  const data = await loadFashionMNIST();
+  const trainX = data.trainImages.toFloat();
+  const trainY = data.trainLabels.toFloat();;
+  const testX = data.testImages.toFloat();;
+  const testY = data.testLabels.toFloat();;
+  const normalModel = createModel();
+  const adversarialModel = createModel();
+
+	// Create normal NN chart
+	const accHistorynormal = [];
+	const ctxnormal = document.getElementById('normalChart').getContext('2d');
+	const accChartnormal = new Chart(ctxnormal, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'Normal NN Accuracy measured on standard test set (%)',
+				data: [],
+				borderColor: 'red',
+				fill: true
+			}]
+		},
+		options: {
+			responsive: false,
+			maintainAspectRatio: false,
+			scales: { y: { beginAtZero: false, max: 100 } }
+		}
+	});
+
+  // Train normal model
+  //await normalModel.fit(trainX, trainY, {epochs:1,batchSize:256,verbose:0});
+	const batchSize = 256;
+
+	// Create normal dataset manually
+	const trainDataset = tf.data
+	  .zip({
+		xs: tf.data.array(trainX.arraySync()),
+		ys: tf.data.array(trainY.arraySync())
+	  })
+	  .batch(batchSize)
+	  .shuffle(1000);
+	// Train with progress feedback
+	
+	const epochs = 3;
+	
+	await normalModel.fitDataset(trainDataset, {
+	  epochs: epochs,
+	  
+	  callbacks: {
+		 onBatchEnd: async (batch, logs) => {
+		 
+		 
+		  const processed = (batch + 1) * batchSize;  
+		document.getElementById('statusnormal').innerText += 
+		  `\nNormal set: [Batch ${batch+1}] Processed ${processed} images — loss=${logs.loss.toFixed(3)}`;
+		  await tf.nextFrame();
+		},
+		onEpochEnd: async (epoch, logs) => {
+			
+			// Train with progress feedback
+			// Run evaluation on test set AFTER each epoch
+			//console.log(trainX.shape, testX.shape, trainY.shape, testY.shape);
+			//console.log(await testX.min().array(), await testX.max().array());
+			//console.log(await trainX.min().array(), await trainX.max().array());
+			//testY.print(true);
+			//trainY.print(true);
+			  const evalResultnormal = await normalModel.evaluate(testX, testY, { batchSize: 256, verbose: 0 });
+			  const testLossnormal = evalResultnormal[0].dataSync()[0];
+			  const testAccnormal = evalResultnormal[1].dataSync()[0];
+			//const evalResultNormal = normalModel.evaluate(testX, testY);
+			//const evalResultAdv = adversarialModel.evaluate(testX, testY);
+			//evalResultNormal[1].print();  // test accuracy
+			//evalResultAdv[1].print();     // test accuracy
+		    //const accnormal = logs.acc !== undefined ? logs.acc : logs.accuracy;
+			const accnormal = testAccnormal;
+            accHistorynormal.push(accnormal * 100); 
+			
+            // Update chart
+            accChartnormal.data.labels.push(`Epoch ${epoch + 1}`);
+            accChartnormal.data.datasets[0].data.push(accnormal * 100);
+            accChartnormal.update(); 
+
+		    document.getElementById('statusnormal').innerText += 
+			`\nEpoch ${epoch + 1} of ${epochs} done. acc=${(accnormal * 100).toFixed(1)}%`;
+		  await tf.nextFrame();
+		}
+	  }
+	});
+  console.log("Normal model trained.");
+
+	
+
+	// Create adversarial NN chart
+	const accHistoryadversarial = [];
+	const ctxadversarial = document.getElementById('adversarialChart').getContext('2d');
+	const accChartadversarial = new Chart(ctxadversarial, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'Adversarial NN Accuracy measured on standard test set (%)',
+				data: [],
+				borderColor: 'blue',
+				fill: true
+			}]
+		},
+		options: {
+			responsive: false,
+			maintainAspectRatio: false,
+			scales: { y: { beginAtZero: false, max: 100 } }
+		}
+	});
+
+	  // Train adversarial model (add noise to inputs)
+	 const advTrainX = addAdversarialNoise(trainX,0.1);
+  	// Create adversarial dataset manually
+	const advtrainDataset = tf.data
+	  .zip({
+		xs: tf.data.array(advTrainX.arraySync()),
+		ys: tf.data.array(trainY.arraySync())
+	  })
+	  .batch(batchSize)
+	  .shuffle(60000);
+	await adversarialModel.fitDataset(advtrainDataset, {
+  epochs: epochs,
+  callbacks: {
+	onBatchEnd: async (batch, logs) => {
+	  const processed = (batch + 1) * batchSize;
+		document.getElementById('statusadversarial').innerText += 
+		  `\nAdversarial set : [Batch ${batch+1}] Processed ${processed} images — loss=${logs.loss.toFixed(3)}`;
+	  await tf.nextFrame();
+	},
+	onEpochEnd: async (epoch, logs) => {
+	
+		// Train with progress feedback
+		// Run evaluation on test set after each epoch and draw the results in plot area
+			console.log(trainX.shape, testX.shape, trainY.shape, testY.shape);
+			console.log(await testX.min().array(), await testX.max().array());
+			console.log(await trainX.min().array(), await trainX.max().array());
+			testY.print(true);
+			trainY.print(true);
+			const evalResultadversarial = await adversarialModel.evaluate(testX, testY, { batchSize: 256, verbose: 0 });
+			const testLossadversarial = evalResultadversarial[0].dataSync()[0];
+			const testAccadversarial = evalResultadversarial[1].dataSync()[0];
+			const accadversarial = testAccadversarial;
+			//const accadversarial = logs.acc !== undefined ? logs.acc : logs.accuracy;
+			accHistoryadversarial.push(accadversarial * 100);
+			
+			
+			// Update chart
+			accChartadversarial.data.labels.push(`Epoch ${epoch + 1}`);
+			accChartadversarial.data.datasets[0].data.push(accadversarial * 100);
+			accChartadversarial.update(); 
+			
+
+			document.getElementById('statusadversarial').innerText +=
+				`\nEpoch ${epoch + 1} of ${epochs} done. acc=${(accadversarial * 100).toFixed(1)}%`;
+	  await tf.nextFrame();
+	}
+  }
+});
+
+ // await adversarialModel.fit(advTrainX, trainY, {epochs:1,batchSize:256,verbose:0});
+  
+  console.log("Adversarial model trained.");
+
+	// Randomly select 100 indices
+	const indices = Array.from({length: testX.shape[0]}, (_, i) => i);
+	tf.util.shuffle(indices);
+	const randomIndices = indices.slice(0, 100);
+	// Gather 100 images
+	const batch = tf.stack(randomIndices.map(i => testX.slice([i, 0], [1, 28*28]).reshape([28,28])));
+
+	// Draw grid
+	drawImageGrid(batch, 'normalCanvas');
+	drawImageGrid(addAdversarialNoise(batch, 0.1), 'adversarialCanvas');
+	
+}
+
+
+function drawImageGrid(tensor, canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+
+  const gridSize = 10;           // 10x10 grid
+  const imgSize = 28;            // each MNIST image is 28x28
+  const spacing = 2;             // spacing between images
+
+  // Set canvas size
+  canvas.width = gridSize * (imgSize + spacing) - spacing;
+  canvas.height = gridSize * (imgSize + spacing) - spacing;
+
+  const data = tensor.dataSync();  // flatten all 100 images into one array
+
+  for (let n = 0; n < gridSize * gridSize; n++) {
+    const row = Math.floor(n / gridSize);
+    const col = n % gridSize;
+
+    const imgData = ctx.createImageData(imgSize, imgSize);
+
+    for (let i = 0; i < imgSize * imgSize; i++) {
+      const val = data[n * imgSize * imgSize + i] * 255;
+      imgData.data[i * 4 + 0] = val; // R
+      imgData.data[i * 4 + 1] = val; // G
+      imgData.data[i * 4 + 2] = val; // B
+      imgData.data[i * 4 + 3] = 255; // Alpha
+    }
+
+    ctx.putImageData(imgData, col * (imgSize + spacing), row * (imgSize + spacing));
+  }
+}
+
+
+
+trainComparison();
+</script>
+</body>
+</html>

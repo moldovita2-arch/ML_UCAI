@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Spectrogram with TFJS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <h2>Live Spectrogram (GPU-accelerated)</h2>
+    <canvas id="spectrogram" width="512" height="256"></canvas>
+    <script>
+        const canvas = document.getElementById('spectrogram');
+        const ctx = canvas.getContext('2d');
+
+        const frameLength = 256;
+        const frameStep = 128;
+        const sampleRate = 16000;
+
+        async function startAudio() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaStreamSource(stream);
+            const processor = audioContext.createScriptProcessor(frameLength, 1, 1);
+
+            const buffer = [];
+
+            processor.onaudioprocess = (e) => {
+                const inputData = e.inputBuffer.getChannelData(0);
+                buffer.push(...inputData);
+
+                // Keep last 1 second of audio
+                if (buffer.length > sampleRate) {
+                    buffer.splice(0, buffer.length - sampleRate);
+                }
+
+                // Convert buffer to tensor
+                const audioTensor = tf.tensor1d(buffer);
+
+                // Compute STFT (GPU accelerated)
+                const stft = tf.signal.stft(audioTensor, frameLength, frameStep);
+                const magnitude = tf.abs(stft);
+                const logMag = tf.log(magnitude.add(1e-6));
+
+                // Draw to canvas
+                logMag.data().then(data => {
+                    const [frames, freqBins] = logMag.shape;
+                    const imageData = ctx.createImageData(frames, freqBins);
+                    const maxVal = Math.max(...data);
+                    for (let i = 0; i < data.length; i++) {
+                        const value = Math.floor(255 * data[i] / maxVal);
+                        imageData.data[i*4 + 0] = value; // R
+                        imageData.data[i*4 + 1] = value; // G
+                        imageData.data[i*4 + 2] = value; // B
+                        imageData.data[i*4 + 3] = 255;   // Alpha
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                });
+
+                audioTensor.dispose();
+                stft.dispose();
+                magnitude.dispose();
+                logMag.dispose();
+            };
+
+            source.connect(processor);
+            processor.connect(audioContext.destination);
+        }
+
+        startAudio();
+    </script>
+</body>
+</html>

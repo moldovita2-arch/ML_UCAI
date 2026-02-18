@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory-Safe GPU Spectrogram</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <h2>Memory-Safe GPU Scrolling Spectrogram</h2>
+    <canvas id="spectrogram" width="512" height="256"></canvas>
+
+    <script>
+        const canvas = document.getElementById('spectrogram');
+        const ctx = canvas.getContext('2d');
+
+        const frameLength = 256;
+        const frameStep = 128;
+        const sampleRate = 16000;
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+
+        // Rolling GPU tensor buffer for the spectrogram (H x W x 3)
+        let canvasTensor = tf.zeros([canvasHeight, canvasWidth, 3]);
+
+        // Audio buffer
+        let audioBuffer = [];
+
+        async function startAudio() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaStreamSource(stream);
+            const processor = audioContext.createScriptProcessor(frameLength, 1, 1);
+
+            processor.onaudioprocess = (e) => {
+                const inputData = e.inputBuffer.getChannelData(0);
+                audioBuffer.push(...inputData);
+                if (audioBuffer.length > sampleRate) audioBuffer.splice(0, audioBuffer.length - sampleRate);
+
+                tf.tidy(() => {
+                    // Convert audio buffer to tensor
+                    const audioTensor = tf.tensor1d(audioBuffer);
+
+                    // STFT and magnitude
+                    const stft = tf.signal.stft(audioTensor, frameLength, frameStep);
+                    const magnitude = tf.abs(stft);
+                    const logMag = tf.log(magnitude.add(1e-6));
+
+                    // Resize to spectrogram column height
+                    let column = tf.image.resizeBilinear(logMag.expandDims(-1), [canvasHeight, 1]);
+                    column = tf.div(column, tf.max(column)); // normalize 0-1
+
+                    // Simple RGB color mapping
+                    column = tf.concat([column, column, column], -1); // [H,1,3]
+
+                    // Shift canvas tensor left and insert new column at right
+                    canvasTensor = tf.tidy(() => {
+                        const left = canvasTensor.slice([0,1,0],[canvasHeight, canvasWidth-1,3]);
+                        return tf.concat([left, column], 1);
+                    });
+
+                    // Draw to canvas
+                    tf.browser.toPixels(canvasTensor, canvas);
+                });
+            };
+
+            source.connect(processor);
+            processor.connect(audioContext.destination);
+        }
+
+        startAudio();
+    </script>
+</body>
+</html>

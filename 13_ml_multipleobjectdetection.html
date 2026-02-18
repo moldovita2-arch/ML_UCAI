@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Multiple object in a picture with boxes </title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.16.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+<style>
+  body { margin: 0; overflow: hidden; background: black; }
+  video, canvas { position: absolute; top: 0; left: 0; width: 100%; height: auto; }
+  #result { position: fixed; right: 10px; top: 10px; color: white; font-size: 14px; background: rgba(0,0,0,0.5); padding: 6px; border-radius: 8px; }
+</style>
+</head>
+<body>
+<video id="webcam" autoplay muted playsinline></video>
+<canvas id="overlay"></canvas>
+<div id="result">Loading model…</div>
+
+<script>
+let model, video, canvas, ctx;
+
+
+// initialize webcam
+async function setupCamera() {
+  video = document.getElementById('webcam');
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1280 } },
+    audio: false
+  });
+  video.srcObject = stream;
+  await new Promise(r => video.onloadedmetadata = r);
+  video.play();
+  return video;
+}
+
+
+
+// main detection loop
+async function detectFrame() {
+  const predictions = await model.detect(video);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const resText = predictions
+    .slice(0, 10)
+    .map(p => `${p.class}: ${(p.score * 100).toFixed(1)}%`)
+    .join("<br>");
+  document.getElementById('result').innerHTML = resText;
+
+  for (const p of predictions) {
+    const [x, y, w, h] = p.bbox;
+    ctx.strokeStyle = 'yellow';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    ctx.fillStyle = 'white';
+    ctx.font = '12px arial';
+    ctx.fillText(`${p.class} ${(p.score * 100).toFixed(1)}%`, x, y > 10 ? y - 5 : 10);
+  }
+
+  setTimeout(detectFrame, 100); // 1 prediction per second
+}
+
+// run everything
+(async () => {
+  await tf.setBackend('webgl');
+  await tf.ready();
+  model = await cocoSsd.load();
+  document.getElementById('result').innerText = "Model loaded";
+
+  await setupCamera();
+  canvas = document.getElementById('overlay');
+  ctx = canvas.getContext('2d');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  detectFrame();
+})();
+</script>
+</body>
+</html>

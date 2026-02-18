@@ -1,0 +1,270 @@
+
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>Vision API Responses</title>
+    <style>
+        body {
+            background-color: #15294b;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 40%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            background-color: #22a;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        table.dataframe {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.dataframe th, table.dataframe td {
+            border: 1px solid #339;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.dataframe th {
+            background-color:#1e293b;
+            color: #e2e8f0;
+        }
+         .file-box, .feature-box, .response-box, .error-box-success, error-box-error {
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: center;
+            max-height: 200px;
+            min-height : 20px;
+            max-width : 20%;
+            min-width : 100px;
+            border-radius: 30px;
+        }
+        .file-box {
+            background-color:#0f172a;
+            #color: #0f172a;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+            hover:border-color: #0078d7;
+            border-radius: 10px;
+			font-size: 20px;
+			max-width : 80ch;
+			max-height: 3ch;
+			min-width : 50ch;
+			min-height: 3ch;
+		    font-size: 16px;
+			text-align:center;
+        }
+        .file-box a {
+            color: #0f172a;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+			text-align:center;
+            
+        }
+
+        .file-box a:hover {
+            border-color: #0078d7;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+            
+        }
+        .feature-box {
+            background-color: #369;
+            border-radius: 30px;
+			text-align: center;
+			max-width : 30ch;
+			max-height: 20ch;
+			min-width : 20ch;
+			min-height: 2ch;
+		    font-size: 16px;
+        }
+        .response-box {
+            background-color: #369;
+            border-radius: 10px;
+			max-width : 140ch;
+			max-height: 40ch;
+			min-width : 10ch;
+			min-height: 4ch;
+		    font-size: 16px;
+			text-align: left;
+        }
+        .error-box-error {
+            background-color: #aa1111;
+            border-radius: 30px;
+            font-size: 12px;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .error-box-success {
+        background-color: #11aa11;
+        }
+
+
+        .object-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: down;
+        text-align: center;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+		
+	     .face-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height :80px;
+        max-width : 140px;
+        min-width : 80px;
+        }
+	
+        .text-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 200px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+
+        .logo-thumb {
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 120px;
+        min-width : 80px;
+        }
+        .default-box {
+            background-color: #369;
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        function searchTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var rows = document.querySelectorAll("table.dataframe tbody tr");
+
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+            });
+        }
+    </script>
+ 
+    </head>
+
+    <body>
+        <h2>🔍 Vision API Responses Viewer</h2>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Introdu paramaterii de filtrare date...">
+        <table border="1" class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>file</th>
+      <th>feature_type</th>
+      <th>response</th>
+      <th>error</th>
+      <th>logo_preview</th>
+      <th>face_preview</th>
+      <th>object_preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_handwriting.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">1_handwriting.jpg</a></div></td>
+      <td><div class="feature-box">DOCUMENT_TEXT_DETECTION</div></td>
+      <td><div class="response-box">You<br>remember things better<br>when you write them down<br>by hand.<br>Here\&#x27;s why.</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_handwriting2.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">1_handwriting2.jpg</a></div></td>
+      <td><div class="feature-box">DOCUMENT_TEXT_DETECTION</div></td>
+      <td><div class="response-box">THANK YOU GUTS<br>FOR WATCHING!<br>Jaz</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_text_jpg.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_text_jpg.jpg</a></div></td>
+      <td><div class="feature-box">DOCUMENT_TEXT_DETECTION</div></td>
+      <td><div class="response-box">I want night time together, sleeping<br>together, waking up together, I want<br>to be with you, just to be with you, I<br>want to spend time with you, to<br>make memories, I want to spend<br>endless amounts of time with you, I<br>want beautiful moments with you, I<br>want you on your good days and on<br>your worst days, I want to comfort<br>you and I want you cheer you up, I<br>want you to be with me in the dark,<br>to hold me, to love me, to help me<br>when I get scared, to come right to<br>the edge to see what\&#x27;s there, I want<br>to make you happy, and not just for a<br>moment, I want to make you forever<br>happy, I want us to live together, to<br>be happy together, I care about you<br>so much, I\&#x27;ll always be there, we\&#x27;ll<br>sort things out, I want you, I want us,<br>I love you so much, I want you, only<br>you.</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/3_text_jpg.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">3_text_jpg.jpg</a></div></td>
+      <td><div class="feature-box">DOCUMENT_TEXT_DETECTION</div></td>
+      <td><div class="response-box">Jane Roe<br>Business Development Manager<br>Professional Business Developer with more than four years of experience in the business development processes.<br>Involved in product testing, management, and development of new business opportunities.<br>jane.roe@gmail.com 202-555-0166<br>New York, USA in linkedin.com/in/jane.roe<br>S jane.roe<br>SKILLS<br>SEO<br>Public Speaking<br>Negotiation<br>Teamwork<br>Decision Making<br>Research &amp; Strategy<br>Email Marketing<br>Google Analytics<br>Emotional Intelligence<br>Sales &amp; Marketing<br>Outbound Marketing<br>Social Media Advertising<br>WORK EXPERIENCE<br>Business Development Manager<br>AirState Solutions<br>09/2014-06/2017<br>New York, USA<br>• Successfully managed $2 - 3 million budget projects and successfully achieved the project scheduled goals.<br>• Developed and implemented new marketing and sales plans and defined the strategy for the next 5 years.<br>• Reviewed constantly the customer feedback and then suggested ways to improve the processes and customer service<br>levels which increased the satisfaction rate from 81% to 95%.<br>• Ensured that new clients will grow into a loyal customer base in a specialist niche market by implementing a new<br>loyalty program.<br>-<br>Business Development Assistant<br>AirState Solutions<br>08/2012-09/2014<br>• Increased the customer satisfaction rate by 25% by improving the customer service.<br>• Planned, supervised, and coordinated daily activity of 3 junior business analysts.<br>Chicago, USA<br>• Improved the communication with the Marketing department to better understand the competitive position.<br>• Directed the creation and implementation of a Business Continuity Plan, and the management of audit programs.<br>EDUCATION<br>MSc in Economics and Business Administration<br>The University of Chicago<br>09/2008-06/2010</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/4_proteine.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">4_proteine.jpg</a></div></td>
+      <td><div class="feature-box">DOCUMENT_TEXT_DETECTION</div></td>
+      <td><div class="response-box">RECOMMENDATION<br>25g<br>serving<br>size<br>+<br>LUNCH<br>WORKONT<br>12/3<br>200ml<br>of water<br>2 hrs<br>before<br>2 hrs<br>after<br>after<br>IS WHEY PROZERO. Cookies &amp; cream flavour. Food supplement, with sweeteners. 100% CFM whey protein isolate<br>GB supplemented with digestive enzymes and vitamin B6. Recommended dosage: mix a dose of 25 g with 200 ml of<br>ter. In case you need protein supplementation consume 1-2 portions daily, in between meals. Maximum 2 doses daily. Do not exceed<br>the recommended dosage. Use: 25 g = approx. 1 and 2/3 measuring scoop. Mix in a shaker according to the recommended dosage<br>After opening keep at a temperature up to 25 °C and consume within 4 months. Ingredients: whey protein isolate (contains<br>sunflower lecithin), L-glutamine, dried whole milk, flavouring, thickener xanthan gum, anti-caking agent silicon dioxide, colouring<br>caramel, mixture of digestive enzymes Digezyme (amylase, protease, lactase, lipase and cellulase), sweeteners sucralose and<br>steviol-glycosides, pyridoxine hydrochloride. The product may contain traces of soya. Does not replace a varied diet. Not intended<br>for children, pregnant and nursing women. Keep out of reach of children! Keep away from heat, frost and humidity<br>DE<br>ISO WHEY PROZERO. Cookies &amp; Cream-Geschmack. Nahrungsergänzungsmittel, mit Süßstoffen. 100% CFM Male<br>ser verrühren. Wenn Eiweißergänzung nötig, konsumieren Sie täglich zwischen den Mahlzeiten 1-2 Portionen. Maximal 2 Dosen<br>täglich. Die empfohlene Verzehrmenge darf nicht überschritten werden. Anwendung: 25 g = ca. 1 und 2/3 des Messbechers Nach<br>empfohlener Verzehrmenge im Shaker verrühren. Nach dem Öffnen bei einer Temperatur bis 25 °C aufbewahren und inner<br>von 4 Monaten aufbrauchen. Zutaten: Molkenproteinisolat (enthält Sonnenblumenlecithin), L-Glutamin, getrocknete Vol<br>Aroma, Verdickungsmittel Xanthangummi, Trennmittel Siliziumdioxid, Farbstoff Karamell, Mischung von Verdauungsenzymen<br>zyme (Amylase, Protease, Laktase, Lipase und Cellulase), Süßstoffe Sukralose und Steviol-Glykoside, Pyridoxin Hydrochlorid<br>Produkt kann Spuren von Soja enthalten. 100 g/25 g enthalten: Brennwert - 1591 kJ/375 kcal/398 kJ/94 kcal Fett-20059<br>⚫z davon gesättigte Fettsäuren - 0,7 g/0,2 g Kohlenhydrate - 5 g/1,3g davon Zucker-3g/0,8g Ballaststoffe-0.5<br>Eiweiß-84 g/21 g Salz -0,7 g/0,2g Vitamin B6 -0,84 mg = 60%*/0,21 mg = 15% Verdauungsenzyme-<br>L-Glutamin-4000 mg/1000 mg, Referenzwert für Nährstoffzufuhr. Bei Einhaltung der empfohlenen Verdunnug 259200<br>das Getränk zuckerfrei und mit niedrigem Laktosegehalt (13/100 ml des Getränks). Kein Ersatz für eine abwechs<br>Ernährung. Nicht für Kinder, schwangere und stillende Frauen geeignet. Außerhalb der Reichweite von Kindern aufbewa<br>Wärme, Frost und Feuchtigkeit schützen. Charge und Mindesthaltbarkeit: siehe Verpackung<br>•<br>*<br>•<br>microfiltré) isolat de protéines de lactosérum, d\&#x27;enzymes digestives, L-Glutamine et de vitamine B6, avec edulcorants<br>ISO WHEY PROZERO. Saveur cookies and cream. Préparation en poudre pour boisson à base de 100% (= flux cros<br>jour, entre les repas. Prendre maximum 2 doses par jour. Ne pas dépasser le dosage recommande. Utilisation: 25g=1 cuil<br>Dosage recommandé: mélanger 25 g dans 200 ml d\&#x27;eau. Selon votre besoin journalier en protéines, consommer 1 a 2 doses<br>doseuse entière + 2/3 d\&#x27;une cuillère doseuse. Selon le dosage recommandé, mélanger dans le shaker. Une fois ouvert, conse<br>la lecithine de tournesol), L-Glutamine, lait entier déshydraté, arôme, épaississant:gomme de xanthane, anti-agglomérant d<br>de silicium, colorant: caramel, mélange d\&#x27;enzymes digestives Digezyme (amylase, protease, lactase, lipase et cellulase<br>rants: sucralose et glycosides de stéviol, chlorhydrate de pyridoxine (vitamine B6). Peut contenir des traces de soja. 100<br>contiennent: Energie-1591 kJ/375 kcal / 398 kJ/94 kcal Matières grasses-2g/0.5g Dont acides gras satures-07<br>•Glucides-5g/1,3g Dont sucres - 3 g/0,8 g Fibres - 0,5g/0.1g Protéines - 84 g/21g Sel-0.7g/0.2g Vitami<br>0.84 mg = 60%*/0,21 mg<br>15%* Enzymes digestives - 56 mg/14 mg L-Glutamine - 4000 mg/1000 mg Apport<br>rences. Si le ratio de dilution recommandé de 25 g/200 ml est respecté, la boisson est sans sucres et faible en lactose<br>dans la boisson). A consommer dans le cadre d\&#x27;une alimentation variée et équilibrée et d\&#x27;un mode de vie sain. No<br>dosage recommandé. Tenir hors de la portée des enfants Déconseillé aux femmes enceintes ou allaitantes, adolesce<br>age<br>Co<br>=<br>•<br>de la lumière. A consommer de préférence avant le - Lot a voir sur<br>Sportolók számara kifejlesztett tapiain<br>zto enzimekk</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+  </tbody>
+</table>
+    </body>
+    </html>
+    

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Spectrogram</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <h2>Live Spectrogram (Scrolling)</h2>
+    <canvas id="spectrogram" width="512" height="256"></canvas>
+    <script>
+        const canvas = document.getElementById('spectrogram');
+        const ctx = canvas.getContext('2d');
+
+        const frameLength = 256;
+        const frameStep = 128;
+        const sampleRate = 16000;
+
+        let buffer = [];
+
+        async function startAudio() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaStreamSource(stream);
+            const processor = audioContext.createScriptProcessor(frameLength, 1, 1);
+
+            processor.onaudioprocess = (e) => {
+                const inputData = e.inputBuffer.getChannelData(0);
+                buffer.push(...inputData);
+
+                if (buffer.length > sampleRate) {
+                    buffer.splice(0, buffer.length - sampleRate);
+                }
+
+                const audioTensor = tf.tensor1d(buffer);
+
+                // STFT on GPU
+                const stft = tf.signal.stft(audioTensor, frameLength, frameStep);
+                const magnitude = tf.abs(stft);
+                const logMag = tf.log(magnitude.add(1e-6));
+
+                logMag.data().then(data => {
+                    const [frames, freqBins] = logMag.shape;
+
+                    // Scroll canvas left
+                    const image = ctx.getImageData(1, 0, canvas.width-1, canvas.height);
+                    ctx.putImageData(image, 0, 0);
+
+                    // Draw newest column on the right
+                    for (let y = 0; y < canvas.height; y++) {
+                        const freqIdx = Math.floor(y * freqBins / canvas.height);
+                        const frameIdx = frames - 1;
+                        const value = Math.floor(255 * data[frameIdx * freqBins + freqIdx] / Math.max(...data));
+                        ctx.fillStyle = `rgb(${value},${value},${value})`;
+                        ctx.fillRect(canvas.width - 1, canvas.height - 1 - y, 1, 1); // flip Y
+                    }
+                });
+
+                audioTensor.dispose();
+                stft.dispose();
+                magnitude.dispose();
+                logMag.dispose();
+            };
+
+            source.connect(processor);
+            processor.connect(audioContext.destination);
+        }
+
+        startAudio();
+    </script>
+</body>
+</html>

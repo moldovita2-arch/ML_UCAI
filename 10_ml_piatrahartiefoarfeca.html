@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  
+  
+  
+  /*
+  <script>
+			(async () => {
+			  await tf.ready();
+			  console.log("✅ TF.js initialized");
+
+			  const backends = tf.engine().registryFactory;
+			  console.log("Available TFJS backends:", Object.keys(backends));
+
+			  try {
+				await tf.setBackend('webgl');
+				await tf.ready();
+				console.log("✅ WebGL backend successfully set");
+			  } catch (err) {
+				console.error("❌ Failed to set WebGL backend:", err);
+			  }
+
+			  console.log("👉 Active backend:", tf.getBackend());
+
+			  // Check if WebGL context can be created manually
+			  const canvas = document.createElement("canvas");
+			  const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+			  if (gl) {
+				console.log("🎨 WebGL context created successfully");
+			  } else {
+				console.error("🚫 WebGL context creation failed. Your GPU or driver might be blocked.");
+			  }
+			})();
+</script>
+
+  */
+  
+  
+  <style>
+    body { margin: 0; overflow: hidden; }
+	video, canvas {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  width: 100%;    /* use relative sizing */
+	  height: auto;   /* maintain aspect ratio */
+	}
+	
+    canvas {
+      z-index: 2;
+      pointer-events: none;
+    }
+    video {
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <video id="webcam" autoplay playsinline>      </video>
+	<canvas id="overlay"></canvas>
+	<canvas id="debugCanvas" style="position:absolute; top:10px; right:10px; border:1px solid #aaa; z-index:10;"></canvas>
+
+
+
+ <script>
+	const labels = ['Paper', 'Rock','Scissors'];
+	const emojis = ['✋', '✊', '✌️'];
+	tf.env().set('WEBGL_PACK', true);
+	
+	// Define the rectangle in video coordinates
+	const detectX = 10; // the left x position for start  ; for y starts at the middle
+
+	//const cropX = 0;   // top-left x of the 300x300 area
+	//const cropY = 100; // top-left y
+
+	//const cropWidth = 300;
+	//const cropHeight = 300;
+	
+	const modelInputSizeX = 150; // model trained on 150x150
+	const modelInputSizeY = 150; // model trained on 150x150
+	
+    const detectWidth = 300;
+    const detectHeight = 300;
+	
+	
+	
+	
+	
+	
+
+	async function setupCamera() {
+		const video = document.getElementById('webcam');
+
+		const constraints = {
+			video: {
+				width: { ideal: 800 },   // ideal width in pixels
+				height: { ideal: 600},   // ideal height in pixels
+				facingMode: "user"        // "user" for front camera, "environment" for back
+			}
+		};
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = stream;
+    await new Promise(resolve => video.onloadedmetadata = resolve);
+
+    return video;
+}
+
+
+	function resizeCanvas(video, canvas) {
+	  canvas.width = video.videoWidth;
+	  canvas.height = video.videoHeight;
+	}
+
+	function drawDetectionZone(ctx, canvas) {
+		//canvas.width = video.videoWidth;
+		//canvas.height = video.videoHeight;
+		const x = detectX; // left margin
+		const y = (canvas.height - detectHeight) / 2; 
+
+		ctx.strokeStyle = 'yellow';
+		ctx.lineWidth = 3;
+		ctx.strokeRect(x, y, detectWidth, detectHeight);
+		return {x,y}
+	}
+
+
+
+
+		(async () => {
+		  const backends = tf.engine().registryFactory;
+		  console.log('Available backends:', Object.keys(backends));
+		  await tf.setBackend('webgl').catch(e => console.warn('WebGL backend not available:', e.message));
+		  await tf.ready();
+		  console.log('Current backend:', tf.getBackend());
+		})();
+
+
+
+
+
+	async function run() {
+	
+	
+		const video = await setupCamera();
+		
+		const canvas = document.getElementById('overlay');
+		const ctx = canvas.getContext('2d');
+		
+		const debugCanvas = document.getElementById('debugCanvas');
+		const debugCtx = debugCanvas.getContext('2d');
+
+		// Load model
+		const model = await tf.loadLayersModel('rps_77_97_SDO_JS/model.json');
+		//const model = await tf.loadLayersModel('rps_53_93_SDO_JS/model.json');	
+		//const model = await tf.loadLayersModel('rps_58_100_SDO_JS/model.json');rps_53_93_SDO_JS
+		//const model = await tf.loadLayersModel('rps_48_100_SDO_JS/model.json');
+		//const model = await tf.loadLayersModel('rps_71_976_SDO_JS/model.json');
+		//const model = await tf.loadLayersModel('rps_10_81_SDO_JS/model.json');
+		//const model = await tf.loadLayersModel('rps_47_100_SDO_JS/model.json');
+		//const model = await tf.loadLayersModel('rps_150_100_SDO_JS/model.json');
+		console.log("✅ Model loaded:", model.name || "Unnamed model");
+		console.log("Current TFJS backend:", tf.getBackend());
+
+
+		// Setup overlay canvas size
+		resizeCanvas(video, canvas);
+		window.addEventListener('resize', () => resizeCanvas(video, canvas));
+
+		// Set internal resolution proportional to video
+		debugCanvas.width = video.videoWidth / 8;   // horizontal pixels
+		debugCanvas.height = video.videoHeight / 6; // vertical pixels
+
+		// Optional: scale CSS to match
+		debugCanvas.style.width = `${debugCanvas.width}px`;
+		debugCanvas.style.height = `${debugCanvas.height}px`;
+
+
+
+		async function detectFrame() {
+			// Resize overlay canvas
+			resizeCanvas(video, canvas);
+
+			// Get detection zone
+			const zone = drawDetectionZone(ctx, canvas);
+
+			// Match debug canvas to detection zone
+			debugCanvas.width = 40;
+			debugCanvas.height = 30;
+			debugCanvas.style.top = `${zone.y}p`;
+			debugCanvas.style.left = `${zone.x + detectWidth + 10}px`; // right of detection zone
+
+			// Prepare input for model
+			const input = tf.tidy(() => {
+				const frame = tf.browser.fromPixels(video)
+					.slice([zone.y, zone.x, 0], [detectHeight, detectWidth, 3])
+					.resizeNearestNeighbor([modelInputSizeY, modelInputSizeX])
+					.toFloat()
+					.div(255.0);
+
+				// Draw debug frame
+				tf.browser.toPixels(frame, debugCanvas);
+				//await tf.browser.draw(frame, debugCanvas, {flipY: true});
+
+				return frame.expandDims();
+			});
+
+			// Run prediction
+			const prediction = model.predict(input);
+			const data = await prediction.data();
+
+			// Clean up
+			prediction.dispose();
+			input.dispose();
+
+			// Find predicted class
+			const idx = data.indexOf(Math.max(...data));
+			const label = labels[idx];
+			const emoji = emojis[idx];
+
+			// Draw overlay
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawDetectionZone(ctx, canvas);
+			ctx.font = "10px arial";
+			ctx.fillStyle = "White";
+			ctx.fillText(`${emoji} ${label}`, 10, 10);
+			ctx.font = "10px arial";
+			ctx.fillStyle = "Blue";
+			ctx.fillText(`Cătălin Ungurean 2025`, 10, canvas.height/2-150-10);
+
+			requestAnimationFrame(detectFrame);
+		}
+
+		detectFrame();
+	}
+
+
+
+
+
+	run();
+</script>
+
+</body>
+</html>

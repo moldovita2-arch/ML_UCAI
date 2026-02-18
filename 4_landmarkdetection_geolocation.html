@@ -1,0 +1,315 @@
+
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>Vision API Responses</title>
+    <style>
+        body {
+            background-color: #15294b;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 40%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            background-color: #22a;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        table.dataframe {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.dataframe th, table.dataframe td {
+            border: 1px solid #339;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.dataframe th {
+            background-color:#1e293b;
+            color: #e2e8f0;
+        }
+         .file-box, .feature-box, .response-box, .error-box-success, error-box-error {
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: center;
+            max-height: 200px;
+            min-height : 20px;
+            max-width : 20%;
+            min-width : 100px;
+            border-radius: 30px;
+        }
+        .file-box {
+            background-color:#0f172a;
+            #color: #0f172a;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+            hover:border-color: #0078d7;
+            border-radius: 10px;
+			font-size: 20px;
+			max-width : 80ch;
+			max-height: 3ch;
+			min-width : 50ch;
+			min-height: 3ch;
+		    font-size: 16px;
+			text-align:center;
+        }
+        .file-box a {
+            color: #0f172a;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+			text-align:center;
+            
+        }
+
+        .file-box a:hover {
+            border-color: #0078d7;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+            
+        }
+        .feature-box {
+            background-color: #369;
+            border-radius: 30px;
+			text-align: center;
+			max-width : 30ch;
+			max-height: 20ch;
+			min-width : 20ch;
+			min-height: 2ch;
+		    font-size: 16px;
+        }
+        .response-box {
+            background-color: #369;
+            border-radius: 10px;
+			max-width : 140ch;
+			max-height: 40ch;
+			min-width : 10ch;
+			min-height: 4ch;
+		    font-size: 16px;
+			text-align: left;
+        }
+        .error-box-error {
+            background-color: #aa1111;
+            border-radius: 30px;
+            font-size: 12px;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .error-box-success {
+        background-color: #11aa11;
+        }
+
+
+        .object-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: down;
+        text-align: center;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+		
+	     .face-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height :80px;
+        max-width : 140px;
+        min-width : 80px;
+        }
+	
+        .text-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 200px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+
+        .logo-thumb {
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 120px;
+        min-width : 80px;
+        }
+        .default-box {
+            background-color: #369;
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        function searchTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var rows = document.querySelectorAll("table.dataframe tbody tr");
+
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+            });
+        }
+    </script>
+ 
+    </head>
+
+    <body>
+        <h2>🔍 Vision API Responses Viewer</h2>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Introdu paramaterii de filtrare date...">
+        <table border="1" class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>file</th>
+      <th>feature_type</th>
+      <th>response</th>
+      <th>error</th>
+      <th>logo_preview</th>
+      <th>face_preview</th>
+      <th>object_preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><div class="file-box"><a href="Data/House1.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">House1.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"><a href="https://www.google.com/maps/search/Paks+Margareeta+–+Eesti+Meremuuseum" target="_blank">Paks Margareeta – Eesti Meremuuseum (43.7%)</a><br><a href="https://www.google.com/maps/search/Nunnatorn+Ja+Linnamüüri+Platvorm" target="_blank">Nunnatorn Ja Linnamüüri Platvorm (41.7%)</a><br><a href="https://www.google.com/maps/search/Mcdonald\'s+Viru" target="_blank">Mcdonald\'s Viru (39.4%)</a><br><a href="https://www.google.com/maps/search/Stolting+Tower" target="_blank">Stolting Tower (39.2%)</a><br><a href="https://www.google.com/maps/search/Viru+Gate" target="_blank">Viru Gate (39.1%)</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p10.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p10.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p2.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p2.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p3.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p3.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"><a href="https://www.google.com/maps/search/Trevi+Fountain" target="_blank">Trevi Fountain (20.3%)</a><br><a href="https://www.google.com/maps/search/Pantheon" target="_blank">Pantheon (18.7%)</a><br><a href="https://www.google.com/maps/search/Piazza+Navona" target="_blank">Piazza Navona (15.8%)</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p4.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p4.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p5.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p5.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"><a href="https://www.google.com/maps/search/Piazza+Di+Spagna" target="_blank">Piazza Di Spagna (63.9%)</a><br><a href="https://www.google.com/maps/search/Spanish+Steps" target="_blank">Spanish Steps (57.8%)</a><br><a href="https://www.google.com/maps/search/Fontana+Della+Barcaccia" target="_blank">Fontana Della Barcaccia (57.7%)</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p6.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p6.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"><a href="https://www.google.com/maps/search/Judith+And+Holofernes" target="_blank">Judith And Holofernes (50.1%)</a><br><a href="https://www.google.com/maps/search/Uffizi+Gallery" target="_blank">Uffizi Gallery (44.8%)</a><br><a href="https://www.google.com/maps/search/Statua+Di+Galileo+Galilei" target="_blank">Statua Di Galileo Galilei (44.6%)</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p7.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p7.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p8.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p8.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"><a href="https://www.google.com/maps/search/Temple+Of+Vespasian+And+Titus" target="_blank">Temple Of Vespasian And Titus (69.5%)</a><br><a href="https://www.google.com/maps/search/Via+Dei+Fori+Imperiali" target="_blank">Via Dei Fori Imperiali (63.4%)</a><br><a href="https://www.google.com/maps/search/Temple+Of+Venus+And+Rome" target="_blank">Temple Of Venus And Rome (60.2%)</a><br><a href="https://www.google.com/maps/search/Roman+Forum" target="_blank">Roman Forum (58.8%)</a><br><a href="https://www.google.com/maps/search/Septimius+Severus+Arch" target="_blank">Septimius Severus Arch (57.3%)</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/p9.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">p9.jpg</a></div></td>
+      <td><div class="feature-box">LANDMARK_DETECTION</div></td>
+      <td><div class="response-box"><a href="https://www.google.com/maps/search/Ponte+Vecchio" target="_blank">Ponte Vecchio (78.4%)</a><br><a href="https://www.google.com/maps/search/Uffizi+Gallery" target="_blank">Uffizi Gallery (75.9%)</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+  </tbody>
+</table>
+    </body>
+    </html>
+    

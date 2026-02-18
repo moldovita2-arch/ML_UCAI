@@ -1,0 +1,252 @@
+
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>Vision API Responses</title>
+    <style>
+        body {
+            background-color: #15294b;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 40%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            background-color: #22a;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        table.dataframe {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.dataframe th, table.dataframe td {
+            border: 1px solid #339;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.dataframe th {
+            background-color:#1e293b;
+            color: #e2e8f0;
+        }
+         .file-box, .feature-box, .response-box, .error-box-success, error-box-error {
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: center;
+            max-height: 200px;
+            min-height : 20px;
+            max-width : 20%;
+            min-width : 100px;
+            border-radius: 30px;
+        }
+        .file-box {
+            background-color:#0f172a;
+            #color: #0f172a;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+            hover:border-color: #0078d7;
+            border-radius: 10px;
+			font-size: 20px;
+			max-width : 80ch;
+			max-height: 3ch;
+			min-width : 50ch;
+			min-height: 3ch;
+		    font-size: 16px;
+			text-align:center;
+        }
+        .file-box a {
+            color: #0f172a;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+			text-align:center;
+            
+        }
+
+        .file-box a:hover {
+            border-color: #0078d7;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+            
+        }
+        .feature-box {
+            background-color: #369;
+            border-radius: 30px;
+			text-align: center;
+			max-width : 30ch;
+			max-height: 20ch;
+			min-width : 20ch;
+			min-height: 2ch;
+		    font-size: 16px;
+        }
+        .response-box {
+            background-color: #369;
+            border-radius: 10px;
+			max-width : 140ch;
+			max-height: 40ch;
+			min-width : 10ch;
+			min-height: 4ch;
+		    font-size: 16px;
+			text-align: left;
+        }
+        .error-box-error {
+            background-color: #aa1111;
+            border-radius: 30px;
+            font-size: 12px;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .error-box-success {
+        background-color: #11aa11;
+        }
+
+
+        .object-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: down;
+        text-align: center;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+		
+	     .face-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height :80px;
+        max-width : 140px;
+        min-width : 80px;
+        }
+	
+        .text-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 200px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+
+        .logo-thumb {
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 120px;
+        min-width : 80px;
+        }
+        .default-box {
+            background-color: #369;
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        function searchTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var rows = document.querySelectorAll("table.dataframe tbody tr");
+
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+            });
+        }
+    </script>
+ 
+    </head>
+
+    <body>
+        <h2>🔍 Vision API Responses Viewer</h2>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Introdu paramaterii de filtrare date...">
+        <table border="1" class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>file</th>
+      <th>feature_type</th>
+      <th>response</th>
+      <th>error</th>
+      <th>logo_preview</th>
+      <th>face_preview</th>
+      <th>object_preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><div class="file-box"><a href="Data/logo.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">logo.jpg</a></div></td>
+      <td><div class="feature-box">LOGO_DETECTION</div></td>
+      <td><div class="response-box">logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/03cwn1&quot;<br>&nbsp;&nbsp;description: &quot;The Hertz Corporation&quot;<br>&nbsp;&nbsp;score: 0.999884844<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1558<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 258<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1939<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 258<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1939<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 496<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1558<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 496<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/03rtqs&quot;<br>&nbsp;&nbsp;description: &quot;Circuit City&quot;<br>&nbsp;&nbsp;score: 0.99969542<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1193<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 201<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1517<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 201<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1517<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 528<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1193<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 528<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/0f7q4&quot;<br>&nbsp;&nbsp;description: &quot;Subway&quot;<br>&nbsp;&nbsp;score: 0.996545136<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1946<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 769<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 2307<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 769<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 2307<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 882<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1946<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 882<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/0z90c&quot;<br>&nbsp;&nbsp;description: &quot;eBay&quot;<br>&nbsp;&nbsp;score: 0.994379<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1201<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 759<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1533<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 759<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1533<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 904<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1201<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 904<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/05s5j&quot;<br>&nbsp;&nbsp;description: &quot;Playboy&quot;<br>&nbsp;&nbsp;score: 0.981019<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1966<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 182<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 2286<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 182<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 2286<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 568<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1966<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 568<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/01dyhm&quot;<br>&nbsp;&nbsp;description: &quot;Firefox&quot;<br>&nbsp;&nbsp;score: 0.96655935<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 405<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 652<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1176<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 652<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1176<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 998<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 405<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 998<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/0lwkh&quot;<br>&nbsp;&nbsp;description: &quot;Nike&quot;<br>&nbsp;&nbsp;score: 0.966349661<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1565<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 733<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1929<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 733<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1929<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 926<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1565<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 926<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/0130pygf&quot;<br>&nbsp;&nbsp;description: &quot;Nintendo Switch&quot;<br>&nbsp;&nbsp;score: 0.713758349<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1588<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1198<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1903<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1198<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1903<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1285<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 1588<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1285<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/0k8z&quot;<br>&nbsp;&nbsp;description: &quot;Apple&quot;<br>&nbsp;&nbsp;score: 0.627900183<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 455<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 187<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 739<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 187<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 739<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 536<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 455<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 536<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br>logo_annotations {<br>&nbsp;&nbsp;mid: &quot;/m/064d7&quot;<br>&nbsp;&nbsp;description: &quot;Pepsi&quot;<br>&nbsp;&nbsp;score: 0.603239<br>&nbsp;&nbsp;bounding_poly {<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 406<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1177<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 769<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1177<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 769<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1318<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;vertices {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x: 406<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: 1318<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"><a href="Logo/logo_The%20Hertz%20Corporation.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,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" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Circuit%20City.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,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" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Subway.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAUAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3HVdRTS9Pe6aNpWBVEjTrI7EBVH1JFczeeItatb+CwE+iyahcSpGLJWcvDuGdzHPIABJ4FVtZl1zXorq3gvdO02eyvE2W82SWKsGVix7EcgAfjT1XQ7j4gjU4Li2OpR2DIzhv3by5A4boSBnOOQCKZhKTb0EXxF4mkW+aMaSy214tkh8uT99ISAcfNxgt+hq3dax4ht0Ywz6JdFLlLaURiQGJmI6jJzwRxxWfokun297p+jnUbWZ9NV7y9lEgCPcSE4AJ6/ec+3FR6hqNpLe6HDc3dlHfLdS3E6WUv7j7jYLnoW+71561hi6jpUJ1I7pN/gKGtrsbN4x8TRWl/cLa6a621yLaIBZMzvkLxzwMnH4Gr9t4g8SXN/c2yDSttvtV5NkmPMIyUHzc4GM/WsNdd0/7DfTxSwutvd+VZxGQfvJBxu+hdic+1SWd7plmfs66mHmsYZJpicBJpWHzNu/iOcjA6Zr5Oea5hyu2j9PT/hvV+R0qELr3vx/r+kalr4w1lvshaztbsXscnk/Z9yBGUgZdiThcZ/Kk07xBdReJIZLvUrW7i1BhB9mtMkQFc4cDJJGchj9PSuf0W4t4tF8O6DcXyh79j55jbLKhO7Zx0ySFz9a9M0zRdM0aHytOsYLVO/loAT9T1Ne1gZ4uu+ec7RTa2+JJvV9vK3Yz0dreXyIrzw7pWoapHqF3ZRTzpEYh5ihlKk55B7jsfc1Yl0vT5rZLaWxtngQ5WJolKr9BjiiivYGkhP7H0wqqnTrQhRhR5C8D06U59L094lhaxtmiU5CGFcA+uMUUUDshg0XSv+gZZf8Afhf8KcdJ00qqnT7QheFHkrx9OKKKA5UOi02whkEkVlbRuOQyRKCPxxVqiigdj//Z" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_eBay.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAcAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3qaeK3j8yaVI0H8TsAP1pkF7a3Wfs9zDKR18tw2PyrzXVb1dS8d3kWo2N5qFnZDbHa26lhnj5mH51FqoAntr3w94c1OwvYZASVgKq6+hArH2p6iy5WSlKzav0sr99b/gdD4F8R3Wp2OqT6veR7YLsxo77UCrjp2rr7e7trtS1tcRTKOpjcMB+VeU/Dnw9Za42p3WpxGeOK5IS1cnYrHksR3Parviqwt/BXiDSNW0VfsqXM3k3Fuh+Rxx2+n9K9ith6cq7pxdn6abXsfOUq1SFJSkrr113PS5J4YjiSVE/3mAoE8TAESoQenzDmuaiNlJcTSx2VzqBZuXcDA+lZV/p7XV3NHbQSW7xp5yRE8gjrivlJ5pKNmoppu2jf52t9x7MsPaLa3Sv/XU76mebHkjeuRweawovESHwudQYjzlXYV/6adP/AK9SeHNL+zaYJbpA9xcN5sm4Zwe1ehHEKc4xhrdX9DkTuUdU8NXya8dc0O6igu3XbNFMCUkH4fhUbaP4m1a8gbVNQhtLWFtxisWYGT2J9K66ituRHWsXUsk7NpWTtrY890bwZ4i8OSXd1pup2jTTylmt5UYxOvUc9QwyatJ4R1bXNag1HxRd27x22fItLUHYD6kmu4orsliqkrt2u9L21PNjhoRsley6XMO0sNU05GgtpLeSEklTJkEVJaaTcQ6sb2adZCyENxjn29q2KK8mOApR5d7Rd0r6I7nXm7+e5w0Glx3niye2gcmxik86Rf4d3p+ddyBgVWtbC1svM+zQrH5hyxHc1Zq8Lh1RT7tmEVY//9k=" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Playboy.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,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" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Firefox.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAdAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD36iuRuPF1/p0N9Lf6M6pbd0Y4JJUAZwRzvH5Go7b4kaTN5aSW11HM67tmFIXnGCxIAPfH5c8UAdlRXDf8LP09ZkEmnXqxGIOXCgsDnGNv9TjrW1Y+LrC/vobSGC7DTlhG7xgK2ACT1yOGXr/eHegCr4p8VzaK5tLG0W5u2jDDe4VUycAnPUcHiuOh1ue6mMmoy3N06oWkVZMKvYBVU49f8aZ4tvxNrt9LK/yQOYyfQLXN22oWt1iRY3Tnl3G0kDoBz069q4sHja1TEujGKau9etvU7Mdl9KGE9vKTTsvS/pp+fyOgXxRd6Fqlo/2y6t7KZ9hSbM0f/AhyV+oIr1LTdVi1EMqjbKgBYA5BB7g9xXzddeKb6z8StaTyNPG42RIi4yWPynHt0zXs/hQNaNpkYB3yowmB/hIXP4ciunMqnsMRStLSelv1XX1POwClOjJSW3X9DuSARgjI96TYuT8o59qWitDUTap/hH5U3yYvOE3lp5gXaHxyB1xn8B+VPooA8j8e2I0rxDJPMoFhqPzK5HyrJjDKfTPB/P0rkbuC98tW0ma3JU7dkqg4+h7H6179qmlWWtafLY6hAs1vIOVPY+oPY+9eO+IfhtHoNwHsNXnETnhJI8kD0yCM/lXlV8DL2vtaf3H0GDx1KdH2NZ2a6/11OL0Xwlql74mTUtem8+43r5UceCzEEYzjgccV7/oVuJL55hysO4M46GRuoHso/nXMeEPB5lh8+fU5WXuqJtJH+9k4r0W2tobS3SC3jEcSDCqO1Onh8RVxCr4hpKPwpf1/wTzsVUoxXs6Gvd9z/9k=" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Nike.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAiAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD36sTxfr8XhfwnqWsSEZtoSYwf4nPCj8SRWjqWo2mkadcahfTrBa26F5JGPCgV4v8AFrWJ/F9/4W8G2CtFJqbpdXCE8oh+5u+g3MR7CgDltM+M/igeDdYmutSE2qPPBDYnyUGzO4ucAc8ADn1rqB468UL4y0vQpdX2xaZYi716cRJyQvmOvTjAKpx3NeV+DdJtY/G15eXa7tL0Hzbybd/EIzhF+rNtFX2uLweDLu+fL634xvzEgH3vIV8tj2aQgfRaAOk0f4veM9cku7DTZjdavqNz5djAIV22kecliccnGBzwACTWtp3iL4ga/wCM73w7pfi22QadFi5vJoIxG8oIDBRt6biQPZc1znhW7h+GHiHxtDIyPdWVh5Vu7AbjKWUDHtls/QUvwzj+G5itrzxNqD/26LhrkmVnSJApyNx+6Txn3zigD6Q0S21Cz0W1g1W9F7fon7+4VAodvYADArQrirf4k6frE7QeGtN1HW3U4MsEXlwKfeR8D8s10dh/bE2JdQ+y2w6+RbkyEfVzj9B+NAHgP7QHjaW71lPCtnKRa2m2S6wf9ZKRkKfZRj8T7V6L4U+JvgfVdIs9QvL3T7DVI4VSZbkKkisBg4YjkemDXgfxZ0m+0v4kaw17G4W6naeGRhw6NyMH26fhXJ6fpeoarcLb6fZXF1KTgJDGXP6UAfUWq/Fj4aaVHMkRgvWk/wBZHaWYYSc55JAB5964HWPj5byPEmheErJGi4glu1DMnPG1VAxz6GqXhX9n3XdU2XGvXCaXbnnylxJMR9Oi/iT9K9t8L/DLwr4SCPYaakt0v/L1c/vJM+xPA/ACgDxm00L4ofEqU3N2sOmWU335pLdYNw9gBvb8fzr0Pwt8CfC+hbJ9SD6vdjnM42xA+yDr+Oa9SooAjgghtoVht4kiiQYVI1CqB7AVJRRQBBdWFnfxhLy0guEByFmjDgfnS21na2Ufl2ttDAn92JAo/IUUUATUUUUAFFFFABRRRQB//9k=" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Nintendo%20Switch.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAASAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD07VdT1PVNYvNN0u6+w2mnoGvLsIGcsRnYgPt3rCt7i2ubC0vIvF+uMl1cC2QbV3K5/vDtWndzjwzrusLfho9O1cb4rvaSscm3aVbHT1rnYdO0SG30UR+JtOWSzkV7kbztl2klSPcAkVzSbufQ0KcORWVlpZpXvprd2fXTyOjstIlvLT7QfFms267mXFwyI3BxnB7U3+zozqZ03/hONS+1hPM8vev3frjFYFjYaHBNbG68Q6TPHFFcIULZyZCSp59M1F/ZulvZ+S/ivTg408Wm9XPLCTd/3zjilzabfiV7HV3m7f4P+B/Vzrx4dmaPzF8Z6iUJxuEqYz9aZNoEsFo10/jLU/JClgwkTDY9PU1zYtdDkmglk17S1VbyOeSIzM4ZVXBHPGT9BUf2LSI5g8fiPSnjSe4dLd3PlqsgwMDsRT5l2/EhUp9Zf+Sf8A6Cx006hp1vfReMdWSO4XdEsrIrH8Ks6Lq+pWGq2unancm8tb5W+yXbx7HDL1Rx/I1yA07S47A23/CT6Y5ktEtmdnP7kq+7cn1/Dmupt7keJ/EWk/2eZJdN0nLyXjqQJZNu0Bc9fUmiMtu4q9JJSvrHXVxtbTTWy1b08ztpI0lQpIiup6qwyDWedH0zP/INs/8Avwv+FFFbSPOwvwsT+x9M/wCgbZ/9+F/wo/sfTP8AoG2f/fhf8KKKg6g/sfTP+gbZ/wDfhf8ACl/sfS/+gbZ/9+F/woooAP7H0zP/ACDrP/vwv+FaCRpEoSNFRAOFUYAooqoHLivhR//Z" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Apple.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCABAADQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD36iiigAqOWYRKM8seAo71JWHfavBBdyRkO8wbYEVf896AL4upTdRIWX5ycqB2we9Xaz9PglLG6uU8uRhhI/7q+/ua0KAFooooAjlk8scDLE4VfU1AYy/MrFz6DhR+FKTvuXPZAFH8z/SnUAR+So5Qsh9VP9OlRmII7TMYw5+9IqBWP1NOmuBG2xBvkP8ADnp7n0qFlLfNK29vTsPoKAIZpohyqGQ+p/xNQRapJby/Ngxd1z0/OlnNP0yxSeVp5VDLGcIp6Z65/lQM3FYMoYdCM0UoooEUQcTzj/b/APZRUN1dlJFt4cGdxn2Qf3jUWr3selebcyZKsoKqOrv02j3ORVGxDxRtLOwa5mO6UjsewHsOlAGnGixKRkljyzHqx9abJJxULT+9QSTUhjZn61raU6takDqDn9KwJHzUtlfNaSZHK9xRcLHU0VHBKs8KyLnDDvRTEVdUslvbUAoHkiYSR5/vCsHzcc+tdXWVf6WZJTLAgYOcumcEH1H9RQMyPO96Y0tX5NGuEA2DzGPbIUD6mk/sK8C53W5P93LD9f8A61LUdzNJzUkELzSKEGSWAH1/zzV9NHmKFnicMP4AynP45rSsLEwfvZQokxhVU5CD0z3PqaVguXIYxDCka9FAAop9FUSf/9k=" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a><a href="Logo/logo_Pepsi.jpeg" target="_blank"><img class="logo-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAZAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD0fxx41bQiLGx2teOMsx6IK8zbxVrry+adTm3ZzwRj8qm8ZtK3i7UPNzkOAM+mBirHhHwjc+I7xZHVo9PjbMsuMbv9lfU/yrhqTnKfLE+0weFwmFwarVUndXbeu/RHpng/VNSuvDtte6q6nznKocYOM4U/ic11NedeOvE1lYnS/DmlujXj3cIaOI5EKKw4OOhOBx9au65f6dJ4uSw155Rp8Vgkyj5hF5rOwJfb3wvGeOvevRVOUYps+Mq14VKsnBWV9u3kdxRXlV7/AGj5EPkNL/wjH26TYbvzSBH5a7d235/K378Z46Z4pgvJ7S2ZRO40S7voIHSwWbAGHaQxlvm2nC5C9MHFHIRzHrFQTXkEFzb28j7ZbgsIl2k7iBk89uPWvPrmPTpXuotAv57LSHs3W9uI/MaKOTcvllc/xfeDbe3XHFSaFcNLqWjRW1qsNtFfTo0tqZPIuB5Gd43cgZ4xyMjgmlyhzE3jvwncXjHVtJs7e5vlADRT52sB7AgE/XivKdQ1Px5dH7DP/aUSD5Rb28JiQewCADFfShqs/wDrj/vVrQqqn9lMnEKpWSjKbsunQ8m+G/w4vLfUU1vW4vLaP5oYWOWyf4mr1lbC2XUZL8R/6TJEsLPk8opJAx06k1ZoqKtWVSXMwpUo042QVXurG3vHt3nj3tbyiaI5I2uARn8iasUVmaBRRRQB/9k=" style="width:64px;height:auto;margin:2px;border:1px solid #ccc;"></a></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/logo.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">logo.jpg</a></div></td>
+      <td><div class="feature-box">TEXT_DETECTION</div></td>
+      <td><div class="response-box">IBM<br>City Hertz<br>Rent a Car<br>PLAYBOY<br>BlackBerry.<br>ebay<br>NIKE<br>SUBWAY<br>pepsi YAHOO!<br>BEST<br>BUY<br>Nintendo SONY</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/logo.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">logo.jpg</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/0dwx7"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 1.07010245<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Logo"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/03g09t"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.45142132<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Clip art"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/01prdc"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.4357<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Limited Liability Company"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/015vq3"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3675<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Name"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/07d0f"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3401<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Trademark"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/01kr8f"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.33526817<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Illustration"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/120z18l3"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3337<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Company"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/023k2"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2988<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Corporation"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/045c7b"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2933<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Google"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/t/24bjj59_jbj9f"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2933<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://logodix.com/logo/51004.jpg" target="_blank">https://logodix.com/logo/51004.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="http://fm.cnbc.com/applications/cnbc.com/resources/files/2015/05/26/LogosGraphic1.jpg" target="_blank">http://fm.cnbc.com/applications/cnbc.com/resources/files/2015/05/26/LogosGraphic1.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/128536250/original/e57e427ee26ff5949104039fd634146238db99ec/do-a-world-class-logo-design.jpg" target="_blank">https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/128536250/original/e57e427ee26ff5949104039fd634146238db99ec/do-a-world-class-logo-design.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://clubz.bg/media/014/logosgraphic.l.webp" target="_blank">https://clubz.bg/media/014/logosgraphic.l.webp</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.businessbecause.com/uploads/default/news/images/d86c2e20439f8d452018af1ade7bb5dac84a7f67.png" target="_blank">https://www.businessbecause.com/uploads/default/news/images/d86c2e20439f8d452018af1ade7bb5dac84a7f67.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://res.cloudinary.com/aauni/w_1440,c_fill,q_auto:eco,f_auto/web/2025/05/screenshot-2025-05-29-153756.jpg" target="_blank">https://res.cloudinary.com/aauni/w_1440,c_fill,q_auto:eco,f_auto/web/2025/05/screenshot-2025-05-29-153756.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://casino-online.com.ec/wp-content/uploads/2024/11/providers.png" target="_blank">https://casino-online.com.ec/wp-content/uploads/2024/11/providers.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "x-raw-image:///1e0b61c31833b64454b0dd16d65e343833552930e9d5f8cb819a7eb576d44cc2"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.it-present.com/wp-content/uploads/2022/03/loghi_v2.jpg" target="_blank">https://www.it-present.com/wp-content/uploads/2022/03/loghi_v2.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.rusalia.com/wp-content/uploads/2021/02/Enviar-dinero-a-Mexico-1-768x435.jpg" target="_blank">https://www.rusalia.com/wp-content/uploads/2021/02/Enviar-dinero-a-Mexico-1-768x435.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://business.columbia.edu/sites/default/files-efs/inline-images/Sponsors%202019_0.png" target="_blank">https://business.columbia.edu/sites/default/files-efs/inline-images/Sponsors%202019_0.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.tiktok.com/api/img/?itemId=7317982961519938848&location=3&aid=1988&index=1" target="_blank">https://www.tiktok.com/api/img/?itemId=7317982961519938848&location=3&aid=1988&index=1</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.wirefly.com/sites/wirefly.com/themes/wirefly/images/cell-phone-carriers.jpg" target="_blank">https://www.wirefly.com/sites/wirefly.com/themes/wirefly/images/cell-phone-carriers.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://appsamurai.com/wp-content/uploads/2025/02/logos2.png" target="_blank">https://appsamurai.com/wp-content/uploads/2025/02/logos2.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "famous llc companies"<br>&nbsp;&nbsp;&nbsp;&nbsp;language_code: "en"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+  </tbody>
+</table>
+    </body>
+    </html>
+    

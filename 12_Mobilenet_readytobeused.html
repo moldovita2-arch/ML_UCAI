@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+</head>
+<body>
+  <img id="img" src="rock_paper_scissors.jpg" width="224">
+  <button onclick="classify()">Classify</button>
+  <div id="result"></div>
+
+  <script>
+    let model;
+    async function loadModel() {
+      // Load the small MobileNet model (V3 lightweight) with ImageNet labels
+      model = await mobilenet.load({version: 3, alpha: 0.5}); 
+      console.log("Model loaded");
+    }
+
+    async function classify() {
+      const img = document.getElementById("img");
+      const predictions = await model.classify(img);
+      document.getElementById("result").innerText = 
+        predictions.map(p => `${p.className}: ${ (p.probability*100).toFixed(1) }%`).join("\n");
+    }
+
+    loadModel();
+  </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MobileNet Object Classification</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #webcam, #overlay, #debugCanvas { position: absolute; top:0; left:0; }
+    #overlay, #debugCanvas { pointer-events: none; }
+    #debugCanvas { border: 2px solid yellow; }
+    #result { position: absolute; top: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5); padding: 5px;}
+  </style>
+</head>
+<body>
+  <video id="webcam" autoplay muted playsinline></video>
+  <canvas id="overlay"></canvas>
+  <canvas id="debugCanvas"></canvas>
+  <div id="result"></div>
+
+  <script>
+    const detectWidth = 300;
+    const detectHeight = 300;
+    const modelInputSize = 224;
+    const inferenceDelay = 1000; // ms delay between inferences
+    const detectX = 10; // left margin
+
+    let video, overlayCanvas, overlayCtx, debugCanvas, model;
+
+    async function setupCamera() {
+      video = document.getElementById('webcam');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 800, height: 600, facingMode: "environment" }
+      });
+      video.srcObject = stream;
+      await new Promise(resolve => video.onloadedmetadata = resolve);
+      return video;
+    }
+
+    function resizeCanvas(canvas) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+    }
+
+    function drawDetectionZone(ctx) {
+      const y = (video.videoHeight - detectHeight) / 2;
+      ctx.strokeStyle = 'yellow';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(detectX, y, detectWidth, detectHeight);
+      return {x: detectX, y};
+    }
+
+    async function run() {
+      overlayCanvas = document.getElementById('overlay');
+      overlayCtx = overlayCanvas.getContext('2d');
+      debugCanvas = document.getElementById('debugCanvas');
+
+      await setupCamera();
+
+      // Overlay matches video
+      resizeCanvas(overlayCanvas);
+
+      // Debug canvas fixed size
+      debugCanvas.width = detectWidth;
+      debugCanvas.height = detectHeight;
+      debugCanvas.style.top = `${(video.videoHeight - detectHeight)/2}px`;
+      debugCanvas.style.left = `${detectX + detectWidth + 10}px`;
+
+      // Load MobileNet
+      model = await mobilenet.load({version:2, alpha:1});
+      console.log("Model loaded");
+
+      // Start inference loop
+      loop();
+
+      // Start overlay drawing
+      drawOverlay();
+    }
+
+    async function loop() {
+      const zone = {x: detectX, y: (video.videoHeight - detectHeight)/2};
+
+      const input = tf.tidy(() => {
+        const frame = tf.browser.fromPixels(video)
+          .slice([zone.y, zone.x, 0], [detectHeight, detectWidth, 3])
+          .resizeNearestNeighbor([modelInputSize, modelInputSize])
+          //.toFloat()
+          //.div(255.0);
+
+        // Draw debug frame in original scale
+        const dispFrame = tf.browser.fromPixels(video)
+          .slice([zone.y, zone.x, 0], [detectHeight, detectWidth, 3])
+		  .resizeNearestNeighbor([modelInputSize/2, modelInputSize/2]);
+        tf.browser.toPixels(dispFrame, debugCanvas);
+
+        return frame.expandDims(); // [1,H,W,3]
+      });
+
+      const predictions = await model.classify(input);
+      input.dispose();
+
+
+
+
+
+
+		// Show top 10 predictions, align text in top-right corner
+		const top10 = predictions.slice(0, 10);
+		const resultEl = document.getElementById("result");
+		resultEl.style.position = "absolute";
+		resultEl.style.top = "12px";
+		resultEl.style.color= "yellow";
+		//resultEl.style.backgroundcolor= "grey";
+		//resultEl.style.right = video.videoWidth;
+		resultEl.style.textAlign = "left";
+		resultEl.style.whiteSpace = "pre";
+		resultEl.innerText = '✌️'+"\tCatalin Ungurean 2025\t----->\t"+ top10.length + "\tdiscovered elements\n\n\n"+top10
+		  .map(p => `✌️  ${p.className}: ${(p.probability * 100).toFixed(1)}%`)
+		  .join("\n")
+		  //.join("\n\n\n\n\n\n\n\n\n\n\n\")
+		  //.join("Cătălin ungurean 2025")
+		  ;
+
+
+
+
+
+
+      setTimeout(loop, inferenceDelay);
+    }
+
+    function drawOverlay() {
+      overlayCtx.clearRect(0,0,overlayCanvas.width, overlayCanvas.height);
+      const zone = drawDetectionZone(overlayCtx);
+
+      requestAnimationFrame(drawOverlay);
+    }
+
+    run();
+  </script>
+</body>
+</html>

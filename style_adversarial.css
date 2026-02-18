@@ -1,0 +1,88 @@
+
+/* Make all elements use border-box sizing */
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 2em;
+}
+
+body {
+	background-color: #15294b;
+	color: #ffffff;;
+	font-family: Arial, sans-serif;
+	margin: 70px;
+	font-size: 10px;
+}
+
+h1 {
+  font-style: italic;
+  width: 800px;
+  font-size: 32px;
+  color: #ffffff;
+  margin: 6px;
+  text-align: center
+}
+
+.Statuscontainer, .Canvascontainer, .Chartcontainer {
+  display: flex;
+  gap: 80px;
+  margin-bottom: 30px;
+}
+
+#statusnormal, #statusadversarial {
+  font-family: monospace;
+  font-size: 8px;
+  color: limegreen;
+  background: #222;
+  padding: 2px 10px;
+  border-radius: 20px;
+  text-align: center;
+  width: 400px;
+  height: 400px;
+  border: 15px solid #0f172a;
+  overflow-y: auto;
+    flex-shrink: 0;
+}
+
+#normalChart, #adversarialChart{
+	  background-color: #fff;
+	  font-size: 8px;
+	  border-radius: 20px;
+	  border: 15px solid #0f172a;
+}
+
+canvas {
+  position: relative;
+  width: 400px;
+  height: 350px;
+  border: 15px solid #0f172a;
+  border-radius: 20px;
+}
+
+
+button {
+  display: block;
+  margin: 10px auto;
+  color: #ffffff;
+  background-color: #0f172a;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 15px;
+  border-radius: 30px;
+  text-align: center;
+  padding: 10px 20px;
+  z-index: 3;
+  position: relative;
+}
+
+
+.removed {
+  display: none;
+}
+
+#status {
+  font-size:150%;
+}

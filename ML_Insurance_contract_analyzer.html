@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Insurance Contract Analyzer Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    h1 { color: #333; }
+    #feedback { margin-top: 20px; }
+    .chunk { padding: 5px; margin-bottom: 5px; border-radius: 4px; }
+    .HighRiskLiability { background-color: #f8d7da; color: #721c24; }
+    .Safe { background-color: #d4edda; color: #155724; }
+    .MissingCoverage { background-color: #fff3cd; color: #856404; }
+  </style>
+</head>
+<body>
+  <h1>Insurance Contract Analyzer Demo</h1>
+  
+  <input type="file" id="fileInput">
+  <button onclick="analyze()">Analyze</button>
+  
+  <h3>Feedback:</h3>
+  <div id="feedback"></div>
+
+  <script>
+            async function analyze() {
+              const file = document.getElementById("fileInput").files[0];
+              if (!file) {
+                alert("Please select a file");
+                return;
+              }
+
+              const formData = new FormData();
+              formData.append("file", file);
+
+              document.getElementById("feedback").innerHTML = "<i>Analyzing...</i>";
+
+              try {
+                const response = await fetch(
+                  "https://carline-unchiselled-superlaryngeally.ngrok-free.dev/analyze",
+                  { method: "POST", body: formData }
+                );
+
+                if (!response.ok) {
+                  // Try to read JSON error from backend
+                  let errMsg = `Server error: ${response.status}`;
+                  try {
+                    const errData = await response.json();
+                    if (errData.detail) errMsg = errData.detail;
+                  } catch (e) {}
+                  throw new Error(errMsg);
+                }
+
+                const data = await response.json();
+
+                let html = `<b>Overall Feedback:</b> ${data.feedback}<br><br>`;
+                html += `<b>Per-chunk Results:</b><br>`;
+                data.chunk_results.forEach((r, i) => {
+                  html += `<div class="chunk ${r}">Chunk ${i+1}: ${r}<br><pre>${data.chunk_texts[i]}</pre></div>`;
+                });
+                html += `<h3>Full Extracted Text:</h3><pre>${data.full_text}</pre>`;
+
+                document.getElementById("feedback").innerHTML = html;
+
+              } catch (err) {
+                document.getElementById("feedback").innerHTML =
+                    `<span style="color:red;">Error: ${err.message}</span>`;
+              }
+            }
+
+  </script>
+</body>
+</html>

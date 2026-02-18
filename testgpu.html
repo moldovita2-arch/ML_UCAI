@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TF.js GPU Check 🚀</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
+</head>
+<body>
+  <h2>TensorFlow.js GPU Test ⚡</h2>
+  <div id="output"></div>
+
+  <script>
+    const output = document.getElementById('output');
+    function log(msg, emoji='ℹ️') {
+      console.log(msg);
+      output.innerHTML += emoji + ' ' + msg + '<br>';
+    }
+
+    async function checkGPU() {
+      log('TF.js version: ' + tf.version.tfjs, '📦');
+
+      // Attempt to use WebGL backend if available
+      if (tf.findBackend('webgl')) {
+        await tf.setBackend('webgl');
+        log('Using WebGL backend 🖥️', '✅');
+      } else {
+        await tf.setBackend('cpu');
+        log('WebGL not found, using CPU 🖱️', '⚠️');
+      }
+      await tf.ready();
+
+      log('Current backend: ' + tf.getBackend(), '🔧');
+
+      // Detect WebGL version
+      let glVersion = 0;
+      try {
+        const canvas = document.createElement('canvas');
+        const gl2 = canvas.getContext('webgl2');
+        if (gl2) {
+          glVersion = 2;
+        } else {
+          const gl1 = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+          if (gl1) glVersion = 1;
+        }
+      } catch(e) {
+        glVersion = 0;
+      }
+      log('WebGL version detected: ' + glVersion, '🖼️');
+
+      // Test tensor operation
+      const t = tf.tensor([1, 4, 9, 16]);
+      const t2 = t.sqrt();
+      log('Tensor sqrt([1,4,9,16]) = ' + t2.dataSync(), '📊');
+
+      const gpuStatus = (tf.getBackend() === 'webgl' && glVersion > 0);
+      log('WebGL backend using GPU? ' + gpuStatus, gpuStatus ? '🚀' : '⚠️');
+    }
+
+    checkGPU();
+  </script>
+</body>
+</html>

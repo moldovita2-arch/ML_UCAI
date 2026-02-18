@@ -1,0 +1,345 @@
+
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>Vision API Responses</title>
+    <style>
+        body {
+            background-color: #15294b;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 40%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            background-color: #22a;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        table.dataframe {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.dataframe th, table.dataframe td {
+            border: 1px solid #339;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.dataframe th {
+            background-color:#1e293b;
+            color: #e2e8f0;
+        }
+        .file-box, .feature-box, .response-box, .error-box-success, error-box-error {
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: left;
+            max-height: 300px;
+            min-height : 20px;
+            max-width : 600px;
+            min-width : 50px;
+            border-radius: 30px;
+        }
+        .file-box, .feature-box, .response-box, .error-box-success, error-box-error {
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: center;
+            max-height: 200px;
+            min-height : 20px;
+            max-width : 20%;
+            min-width : 100px;
+            border-radius: 30px;
+        }
+        .file-box {
+            background-color:#0f172a;
+            #color: #0f172a;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+            hover:border-color: #0078d7;
+            border-radius: 10px;
+			font-size: 20px;
+			max-width : 80ch;
+			max-height: 3ch;
+			min-width : 50ch;
+			min-height: 3ch;
+		    font-size: 16px;
+			text-align:center;
+        }
+        .file-box a {
+            color: #0f172a;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+			text-align:center;
+            
+        }
+
+        .file-box a:hover {
+            border-color: #0078d7;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+            
+        }
+        .feature-box {
+            background-color: #369;
+            border-radius: 30px;
+			text-align: center;
+			max-width : 30ch;
+			max-height: 20ch;
+			min-width : 20ch;
+			min-height: 2ch;
+		    font-size: 16px;
+        }
+        .response-box {
+            background-color: #369;
+            border-radius: 10px;
+			max-width : 140ch;
+			max-height: 40ch;
+			min-width : 10ch;
+			min-height: 4ch;
+		    font-size: 16px;
+			text-align: left;
+        }
+        .error-box-error {
+            background-color: #aa1111;
+            border-radius: 30px;
+            font-size: 12px;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .error-box-success {
+        background-color: #11aa11;
+        }
+        .object-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: down;
+        text-align: center;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+		
+	     .face-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height :80px;
+        max-width : 140px;
+        min-width : 80px;
+        }
+	
+        .text-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 200px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+
+        .logo-thumb {
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 120px;
+        min-width : 80px;
+        }
+        .default-box {
+            background-color: #369;
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        function searchTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var rows = document.querySelectorAll("table.dataframe tbody tr");
+
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+            });
+        }
+    </script>
+ 
+    </head>
+
+    <body>
+        <h2>🔍 Vision API Responses Viewer</h2>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Introdu paramaterii de filtrare date...">
+        <table border="1" class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>file</th>
+      <th>feature_type</th>
+      <th>response</th>
+      <th>error</th>
+      <th>logo_preview</th>
+      <th>face_preview</th>
+      <th>object_preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_laptop_emag.png" target="_blank" style="color:#1E90FF; text-decoration:none;">1_laptop_emag.png</a></div></td>
+      <td><div class="feature-box">TEXT_DETECTION</div></td>
+      <td><div class="response-box"></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_laptop_emag.png" target="_blank" style="color:#1E90FF; text-decoration:none;">1_laptop_emag.png</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11wx7607kq"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.795850039<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Lenovo IdeaPad Slim 5 16irl8"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/01c648"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7327<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Laptop"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/1ymzqljdy"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7223<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Lenovo"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11gzn475gs"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7197<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "1 ft"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11f8mrsblg"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7158<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "1TB Ssd"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11lgkw4hw4"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7151<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "24 GB"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11gznvbpw2"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7094<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "14 in"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/01m3v"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.6756<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Computer"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/09tzjm"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.6726<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "MacBook"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/0643t"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.650506794<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Personal computer"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://s13emagst.akamaized.net/products/92844/92843197/images/res_673b5ed0372104da880ba9dfb806ed8a.jpg" target="_blank">https://s13emagst.akamaized.net/products/92844/92843197/images/res_673b5ed0372104da880ba9dfb806ed8a.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://i.moyo.ua/img/gallery/6624/83/3085045_middle.jpg" target="_blank">https://i.moyo.ua/img/gallery/6624/83/3085045_middle.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://img.pccomponentes.com/articles/1087/10874113/2693-lenovo-ideapad-slim-5-16irh10-intel-core-i7-13620h-32gb-1tb-ssd-16-comprar.jpg" target="_blank">https://img.pccomponentes.com/articles/1087/10874113/2693-lenovo-ideapad-slim-5-16irh10-intel-core-i7-13620h-32gb-1tb-ssd-16-comprar.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.mynavyexchange.com/products/images/large/19228802_001.jpg" target="_blank">https://www.mynavyexchange.com/products/images/large/19228802_001.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.flanco.ro/media/catalog/product/cache/e53d4628cd85067723e6ea040af871ec/6/0/60646067cf070e2aba78.23321813.jpeg" target="_blank">https://www.flanco.ro/media/catalog/product/cache/e53d4628cd85067723e6ea040af871ec/6/0/60646067cf070e2aba78.23321813.jpeg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_159805010/fee_786_587_png" target="_blank">https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_159805010/fee_786_587_png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://thumb.pccomponentes.com/w-530-530/articles/1087/10874113/2693-lenovo-ideapad-slim-5-16irh10-intel-core-i7-13620h-32gb-1tb-ssd-16-comprar.jpg" target="_blank">https://thumb.pccomponentes.com/w-530-530/articles/1087/10874113/2693-lenovo-ideapad-slim-5-16irh10-intel-core-i7-13620h-32gb-1tb-ssd-16-comprar.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.mynavyexchange.com/products/images/medium/19228802_001.jpg" target="_blank">https://www.mynavyexchange.com/products/images/medium/19228802_001.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://copy-electronic.hr/upload/catalog/product/11157/thumb/83hs004tsc-1_68a8253ed6c0f_500x500r.jpg" target="_blank">https://copy-electronic.hr/upload/catalog/product/11157/thumb/83hs004tsc-1_68a8253ed6c0f_500x500r.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.i-cell.co.il/cdn/shop/files/6c16e619ac94befcabec9e6ed5735a28.jpg?v=1758103095&width=500" target="_blank">https://www.i-cell.co.il/cdn/shop/files/6c16e619ac94befcabec9e6ed5735a28.jpg?v=1758103095&width=500</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://img-cdn.heureka.group/v1/e89c989c-fabe-4eca-ac51-27ab9f114f84.jpg" target="_blank">https://img-cdn.heureka.group/v1/e89c989c-fabe-4eca-ac51-27ab9f114f84.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://p1.akcdn.net/full/1417520509.lenovo-ideapad-slim-3-82xm00s0hv.jpg" target="_blank">https://p1.akcdn.net/full/1417520509.lenovo-ideapad-slim-3-82xm00s0hv.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://img-cdn.heureka.group/v1/a75d48f9-8ff7-5860-b2d3-28fbec3172d9.jpg" target="_blank">https://img-cdn.heureka.group/v1/a75d48f9-8ff7-5860-b2d3-28fbec3172d9.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://img-cdn.heureka.group/v1/323e289c-29cf-5042-917b-74d5810f2982.jpg?width=350&height=350" target="_blank">https://img-cdn.heureka.group/v1/323e289c-29cf-5042-917b-74d5810f2982.jpg?width=350&height=350</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.myfone.com.tw/website_twmf/uploads_product/website_67/037/308/ECP0006703730880_1_20861704.jpg" target="_blank">https://www.myfone.com.tw/website_twmf/uploads_product/website_67/037/308/ECP0006703730880_1_20861704.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://down-tw.img.susercontent.com/file/tw-11134207-81ztm-meh0em141czq16_tn.webp" target="_blank">https://down-tw.img.susercontent.com/file/tw-11134207-81ztm-meh0em141czq16_tn.webp</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://image.alza.cz/Foto/CommodityLegend/legends/NT/NT389n9/assets/68556760432d05683af1c56a/orig.png?width=1250" target="_blank">https://image.alza.cz/Foto/CommodityLegend/legends/NT/NT389n9/assets/68556760432d05683af1c56a/orig.png?width=1250</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://img-cdn.heureka.group/v1/6426c47f-31d6-5d3d-9cc8-bf48c0794394.jpg" target="_blank">https://img-cdn.heureka.group/v1/6426c47f-31d6-5d3d-9cc8-bf48c0794394.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://img-cdn.heureka.group/v1/45d26155-335c-4cb7-bca0-b081b9e9084e.jpg?width=400&height=400" target="_blank">https://img-cdn.heureka.group/v1/45d26155-335c-4cb7-bca0-b081b9e9084e.jpg?width=400&height=400</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://blog.pic.bg/wp-content/uploads/2025/09/19648.jpg" target="_blank">https://blog.pic.bg/wp-content/uploads/2025/09/19648.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.argos.co.uk/browse/technology/laptops-and-pcs/laptops/c:30049/brands:lenovo/processor-type:intel-core-i5/" target="_blank">https://www.argos.co.uk/browse/technology/laptops-and-pcs/laptops/c:30049/brands:lenovo/processor-type:intel-core-i5/</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Lenovo Intel Core i5 Laptops - Argos"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://media.4rgos.it/s/Argos/7804340_R_SET" target="_blank">https://media.4rgos.it/s/Argos/7804340_R_SET</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?q=%3A%3AscreenSize%3A16%2Binch%3Atype%3ALaptop" target="_blank">https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?q=%3A%3AscreenSize%3A16%2Binch%3Atype%3ALaptop</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "16 inch Laptop Laptops & MacBooks - Costco"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg" target="_blank">https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.mynavyexchange.com/lenovo-83j1002kus-ideapad-slim-16-laptop-core-7-processor-240h-16gb-ram-1tb-storage-intel-g/19228802" target="_blank">https://www.mynavyexchange.com/lenovo-83j1002kus-ideapad-slim-16-laptop-core-7-processor-240h-16gb-ram-1tb-storage-intel-g/19228802</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Lenovo 83j1002kus Ideapad Slim 16\" Laptop, Core 7 Processor ..."<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.mynavyexchange.com/products/images/large/19228802_001.jpg" target="_blank">https://www.mynavyexchange.com/products/images/large/19228802_001.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.mynavyexchange.com/products/images/medium/19228802_001.jpg" target="_blank">https://www.mynavyexchange.com/products/images/medium/19228802_001.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.argos.co.uk/browse/technology/laptops-and-pcs/laptops/c:30049/processor-type:intel-core-i5/type:laptops/" target="_blank">https://www.argos.co.uk/browse/technology/laptops-and-pcs/laptops/c:30049/processor-type:intel-core-i5/type:laptops/</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Intel Core i5 Laptops Laptops - Argos"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://media.4rgos.it/s/Argos/7804340_R_SET" target="_blank">https://media.4rgos.it/s/Argos/7804340_R_SET</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?q=%3A%3AprocessorAndSpeed%3AIntel%2BCore%2Bi5" target="_blank">https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?q=%3A%3AprocessorAndSpeed%3AIntel%2BCore%2Bi5</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Intel Core i5 Laptops & MacBooks - Costco"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg" target="_blank">https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.harveynorman.ie/computing/laptops/page-2/" target="_blank">https://www.harveynorman.ie/computing/laptops/page-2/</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Laptops | Ireland - Harvey Norman"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://hniesfp.imgix.net/8/images/detailed/1055/83HR0097UK_2.jpg?fit=fill&bg=0FFF&w=1500&h=1000&auto=format,compress" target="_blank">https://hniesfp.imgix.net/8/images/detailed/1055/83HR0097UK_2.jpg?fit=fill&bg=0FFF&w=1500&h=1000&auto=format,compress</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?page=1" target="_blank">https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?page=1</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Laptops Deals Online UK | MacBooks Deals | Costco UK p.1"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg" target="_blank">https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.argos.co.uk/product/7804340" target="_blank">https://www.argos.co.uk/product/7804340</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Lenovo Slim 5 14in i5 24GB 512GB Laptop -Blue - Argos"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://media.4rgos.it/s/Argos/7804340_R_SET" target="_blank">https://media.4rgos.it/s/Argos/7804340_R_SET</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?q=:price-desc:graphicscard:Intel%2BUHD%2BGraphics:type:Laptop" target="_blank">https://www.costco.co.uk/Computers/Laptops-MacBooks/c/cos_16.1?q=:price-desc:graphicscard:Intel%2BUHD%2BGraphics:type:Laptop</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "Intel UHD Graphics Laptop Laptops & MacBooks - Costco"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg" target="_blank">https://www.costco.co.uk/medias/sys_master/images/h2e/h22/367894208970782.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://plofethiopia.org/?u=82753811051740" target="_blank">https://plofethiopia.org/?u=82753811051740</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "14 Inch Ideapad Slim I5 Lenovo IdeaPad Slim 14ITL 8GB RAM ..."<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://hniesfp.imgix.net/8/images/detailed/1055/83HR0092UK_2.jpg?fit=fill&bg=0FFF&w=1500&h=1000&auto=format,compress" target="_blank">https://hniesfp.imgix.net/8/images/detailed/1055/83HR0092UK_2.jpg?fit=fill&bg=0FFF&w=1500&h=1000&auto=format,compress</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://p3-ofp.static.pub//fes/cms/2024/11/18/m8qtjc1axlv7f8tf236s9xgyuc9pih493056.jpg" target="_blank">https://p3-ofp.static.pub//fes/cms/2024/11/18/m8qtjc1axlv7f8tf236s9xgyuc9pih493056.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://images.icecat.biz/img/gallery/a87bfb6ebd6fc6eceddd16d01b88acbe03879e24.jpg" target="_blank">https://images.icecat.biz/img/gallery/a87bfb6ebd6fc6eceddd16d01b88acbe03879e24.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://d13pvy8xd75yde.cloudfront.net/global/india/menu/Megabook-T-Series.png" target="_blank">https://d13pvy8xd75yde.cloudfront.net/global/india/menu/Megabook-T-Series.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cms-assets.xboxservices.com/assets/94/a3/94a3b1aa-e4cc-449e-ae85-266163df1abf.jpg?n=2438801_Sneaky-Carousel-0_ASUS_502x502.jpg" target="_blank">https://cms-assets.xboxservices.com/assets/94/a3/94a3b1aa-e4cc-449e-ae85-266163df1abf.jpg?n=2438801_Sneaky-Carousel-0_ASUS_502x502.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cdn.test.de/file/image/ct/produktbilder/310000022890/v2/n1556-2506/hauptbild_original/hauptbild_original.jpg" target="_blank">https://cdn.test.de/file/image/ct/produktbilder/310000022890/v2/n1556-2506/hauptbild_original/hauptbild_original.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cdn.test.de/file/image/ct/produktbilder/310000022890/v2/n1560-2506/hauptbild_original/hauptbild_original.jpg" target="_blank">https://cdn.test.de/file/image/ct/produktbilder/310000022890/v2/n1560-2506/hauptbild_original/hauptbild_original.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.tiktok.com/api/img/?itemId=7518231023772011782&location=0&aid=1988" target="_blank">https://www.tiktok.com/api/img/?itemId=7518231023772011782&location=0&aid=1988</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/MSFT-The-Acer-Swift-14-AI-RW1ly0x?scl=1&fmt=png-alpha" target="_blank">https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/MSFT-The-Acer-Swift-14-AI-RW1ly0x?scl=1&fmt=png-alpha</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://image-us.samsung.com/SamsungUS/home/mobile/mobile-accessories/tablets/11262024/ef-dx725ubeguj/gallery/EF-DX725UBEGUJ_SDSAC-8509-Tab-S9_Tab-S9-FE_Book-Cover-Keyboard_AI-Key_009_Standing5_Black-1600x1200.jpg?$product-card-small-jpg$" target="_blank">https://image-us.samsung.com/SamsungUS/home/mobile/mobile-accessories/tablets/11262024/ef-dx725ubeguj/gallery/EF-DX725UBEGUJ_SDSAC-8509-Tab-S9_Tab-S9-FE_Book-Cover-Keyboard_AI-Key_009_Standing5_Black-1600x1200.jpg?$product-card-small-jpg$</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://storage.googleapis.com/c80429fc-2c82-45e8-be63-a7ff5b0510f4/products/1656721/962be289-4cce-4f26-9d77-ae94590bb017_thumbnail.jpg" target="_blank">https://storage.googleapis.com/c80429fc-2c82-45e8-be63-a7ff5b0510f4/products/1656721/962be289-4cce-4f26-9d77-ae94590bb017_thumbnail.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "Laptop"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_laptop_emag.png" target="_blank" style="color:#1E90FF; text-decoration:none;">1_laptop_emag.png</a></div></td>
+      <td><div class="feature-box">PRODUCT SEARCH</div></td>
+      <td><div class="response-box"></div></td>
+      <td><div class="error-box-error">Probleme la căutare -&gt; list index out of range -&gt; verificați dacă există text în imagine</div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_laptop_emag_label.png" target="_blank" style="color:#1E90FF; text-decoration:none;">1_laptop_emag_label.png</a></div></td>
+      <td><div class="feature-box">TEXT_DETECTION</div></td>
+      <td><div class="response-box">Laptop Lenovo IdeaPad Slim 5 16IRH10 cu procesor Intel® Core™ i5-13420H</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_laptop_emag_label.png" target="_blank" style="color:#1E90FF; text-decoration:none;">1_laptop_emag_label.png</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/04sf9"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2866<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Meter"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.lion.co.jp/ja/assets/img/top/sns-note.png" target="_blank">https://www.lion.co.jp/ja/assets/img/top/sns-note.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://yt3.googleusercontent.com/ytc/AIdro_lThPgoQEvRq-UflvYrDJVKAzPU6K22xF3Ex9PUg6uSUg=s900-c-k-c0x00ffffff-no-rj" target="_blank">https://yt3.googleusercontent.com/ytc/AIdro_lThPgoQEvRq-UflvYrDJVKAzPU6K22xF3Ex9PUg6uSUg=s900-c-k-c0x00ffffff-no-rj</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.munich-airport.de/_b/0000000000000005903874bb5c5a91d1/Logo_ETON.png" target="_blank">https://www.munich-airport.de/_b/0000000000000005903874bb5c5a91d1/Logo_ETON.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.uibk.ac.at/media/filer_public_thumbnails/filer_public/95/da/95da36c0-aa7c-4967-a544-bd44f72df5b9/dummy_portrait_150x150.png__1200x720_crop_subsampling-2_upscale.png" target="_blank">https://www.uibk.ac.at/media/filer_public_thumbnails/filer_public/95/da/95da36c0-aa7c-4967-a544-bd44f72df5b9/dummy_portrait_150x150.png__1200x720_crop_subsampling-2_upscale.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://all.accor.com/loyalty-program/assets/icons/brands/logos/joe.svg" target="_blank">https://all.accor.com/loyalty-program/assets/icons/brands/logos/joe.svg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.hearst.nl/wp-content/uploads/2018/07/Hearst-brands-_Quote-640x640.png" target="_blank">https://www.hearst.nl/wp-content/uploads/2018/07/Hearst-brands-_Quote-640x640.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://all.accor.com/assets/icons/brands/logos/neq.svg" target="_blank">https://all.accor.com/assets/icons/brands/logos/neq.svg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://israelpolicyforum.org/wp-content/uploads/2020/05/Screen-Shot-2020-05-05-at-3.00.45-PM.png" target="_blank">https://israelpolicyforum.org/wp-content/uploads/2020/05/Screen-Shot-2020-05-05-at-3.00.45-PM.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://yt3.googleusercontent.com/bZvBwq3yn-bUXkFa6bpaaX2ZgZnYR9sLYDpe7AmKAW3oX47PRaNEsBpMghuF-lJ6Y3MTXz2kHg=s900-c-k-c0x00ffffff-no-rj" target="_blank">https://yt3.googleusercontent.com/bZvBwq3yn-bUXkFa6bpaaX2ZgZnYR9sLYDpe7AmKAW3oX47PRaNEsBpMghuF-lJ6Y3MTXz2kHg=s900-c-k-c0x00ffffff-no-rj</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=677143634467914" target="_blank">https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=677143634467914</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "calligraphy"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_laptop_emag_label.png" target="_blank" style="color:#1E90FF; text-decoration:none;">1_laptop_emag_label.png</a></div></td>
+      <td><div class="feature-box">PRODUCT SEARCH</div></td>
+      <td><div class="response-box">Tailored search engine answers : <br><br> Searched text:<br><br>-----&nbsp;&nbsp;Laptop Lenovo IdeaPad Slim 5 16IRH10 cu procesor Intel Core i5 13420H&nbsp;&nbsp;-----<br><br>Rezults:<br><br>-----Laptop Lenovo IdeaPad Slim 5 16IRH10 cu procesor Intel® Core ... - <a href="https://www.emag.ro/laptop-lenovo-ideapad-slim-5-16irh10-cu-procesor-intelr-coretm-i5-13420h-pana-la-4-6ghz-16-wuxga-ips-16gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-luna-grey-83hs0038rm/pd/DGR5TWYBM/" target="_blank">https://www.emag.ro/laptop-lenovo-ideapad-slim-5-16irh10-cu-procesor-intelr-coretm-i5-13420h-pana-la-4-6ghz-16-wuxga-ips-16gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-luna-grey-83hs0038rm/pd/DGR5TWYBM/</a><br>Laptop Lenovo 16'' IdeaPad Slim 5 16IRH10, WUXGA IPS, Procesor ... - <a href="https://www.pcgarage.ro/notebook-laptop/lenovo/16-ideapad-slim-5-16irh10-wuxga-ips-procesor-intel-core-i5-13420h-12m-cache-up-to-460-ghz-16gb-ddr5-1tb-ssd-intel-uhd-no-os-luna-grey/" target="_blank">https://www.pcgarage.ro/notebook-laptop/lenovo/16-ideapad-slim-5-16irh10-wuxga-ips-procesor-intel-core-i5-13420h-12m-cache-up-to-460-ghz-16gb-ddr5-1tb-ssd-intel-uhd-no-os-luna-grey/</a><br>Laptop LENOVO IdeaPad Slim 3 16IRH10, Intel Core i5-13420H ... - <a href="https://www.emag.ro/laptop-lenovo-ideapad-slim-3-16irh10-intel-core-i5-13420h-pana-la-4-6ghz-16-wuxga-16gb-ssd-512gb-intel-uhd-graphics-no-os-cosmic-blue-83k2003lrm/pd/DKRMHK3BM/" target="_blank">https://www.emag.ro/laptop-lenovo-ideapad-slim-3-16irh10-intel-core-i5-13420h-pana-la-4-6ghz-16-wuxga-16gb-ssd-512gb-intel-uhd-graphics-no-os-cosmic-blue-83k2003lrm/pd/DKRMHK3BM/</a><br>Laptop Lenovo IdeaPad Slim 5 16IRH10 (Procesor Intel® Core™ i5 ... - <a href="https://www.evomag.ro/portabile-laptopuri-notebook/lenovo-laptop-lenovo-ideapad-slim-5-16irh10-procesor-intel-core-i5-13420h-12m-cache-up-to-4.60-ghz-16-wuxga-16gb-1tb-ssd-intel-uhd-graphics-albastru-4219389.html" target="_blank">https://www.evomag.ro/portabile-laptopuri-notebook/lenovo-laptop-lenovo-ideapad-slim-5-16irh10-procesor-intel-core-i5-13420h-12m-cache-up-to-4.60-ghz-16-wuxga-16gb-1tb-ssd-intel-uhd-graphics-albastru-4219389.html</a><br>Laptop Lenovo IdeaPad Slim 3 15IRH10 cu procesor Intel® Core ... - <a href="https://www.emag.ro/laptop-lenovo-ideapad-slim-3-15irh10-cu-procesor-intelr-coretm-i5-13420h-pana-la-4-6ghz-15-3-wuxga-ips-24gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-metal-cosmic-blue-83k10035rm/pd/DHCS3WYBM/" target="_blank">https://www.emag.ro/laptop-lenovo-ideapad-slim-3-15irh10-cu-procesor-intelr-coretm-i5-13420h-pana-la-4-6ghz-15-3-wuxga-ips-24gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-metal-cosmic-blue-83k10035rm/pd/DHCS3WYBM/</a><br>Laptop Lenovo IdeaPad Slim 5 16IRH10,16", Intel Core i5-13420H ... - <a href="https://www.flanco.ro/laptop-lenovo-ideapad-slim-5-16irh10-16-intel-core-i5-13420h-16-gb-ddr5-1tb-ssd-no-os-luna-grey.html" target="_blank">https://www.flanco.ro/laptop-lenovo-ideapad-slim-5-16irh10-16-intel-core-i5-13420h-16-gb-ddr5-1tb-ssd-no-os-luna-grey.html</a><br>Laptop Lenovo IdeaPad Slim 3 16IRH10 cu procesor Intel® Core ... - <a href="https://www.emag.ro/laptop-lenovo-ideapad-slim-3-16irh10-cu-procesor-intelr-coretm-i5-13420h-pana-la-4-6ghz-16-wuxga-ips-24gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-cosmic-blue-83k2003nrm/pd/DFBFJT3BM/" target="_blank">https://www.emag.ro/laptop-lenovo-ideapad-slim-3-16irh10-cu-procesor-intelr-coretm-i5-13420h-pana-la-4-6ghz-16-wuxga-ips-24gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-cosmic-blue-83k2003nrm/pd/DFBFJT3BM/</a><br>Laptop LENOVO IdeaPad Slim 3 16IRH10, Intel Core i5-13420H ... - <a href="https://altex.ro/laptop-lenovo-ideapad-slim-3-16irh10-intel-core-i5-13420h-pana-la-4-6ghz-16-wuxga-16gb-ssd-512gb-intel-uhd-graphics-freedos-cosmic-blue/cpd/LAP83K2003LRM/" target="_blank">https://altex.ro/laptop-lenovo-ideapad-slim-3-16irh10-intel-core-i5-13420h-pana-la-4-6ghz-16-wuxga-16gb-ssd-512gb-intel-uhd-graphics-freedos-cosmic-blue/cpd/LAP83K2003LRM/</a><br>Laptop Lenovo IdeaPad Slim 5 14IRH10 cu procesor Intel® Core i5 ... - <a href="https://www.emag.ro/laptop-lenovo-ideapad-slim-5-14irh10-cu-procesor-intelr-core-i5-13420h-pana-la-4-6ghz-14-wuxga-ips-16gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-luna-grey-83hr003arm/pd/DY3KFF3BM/" target="_blank">https://www.emag.ro/laptop-lenovo-ideapad-slim-5-14irh10-cu-procesor-intelr-core-i5-13420h-pana-la-4-6ghz-14-wuxga-ips-16gb-ddr5-ram-1tb-ssd-intelr-uhd-graphics-no-os-luna-grey-83hr003arm/pd/DY3KFF3BM/</a><br>Laptop Lenovo preturi. Tip procesor: Intel Core i5 - <a href="https://www.compari.ro/notebook-laptop-c3100/f:lenovo,tip-procesor-intel-core-i5/-----" target="_blank">https://www.compari.ro/notebook-laptop-c3100/f:lenovo,tip-procesor-intel-core-i5/-----</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_Ecoflow.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_Ecoflow.jpg</a></div></td>
+      <td><div class="feature-box">TEXT_DETECTION</div></td>
+      <td><div class="response-box">ECOFLOW<br>23.8-<br>1892. 86 2386.</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_Ecoflow.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_Ecoflow.jpg</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11x6sp66zh"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.9093<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "EcoFlow DELTA Pro 3 Portable Power Station"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11tjh71rd9"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7354<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "EcoFlow"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11ykj53_c3"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.7174<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "EcoFlow DELTA Pro Portable Power Station"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11xvyj9zs0"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.5991<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "ecoflow DELTA Pro 3 Portable Power Station +"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/02lts"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.5804<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Electricity"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/01c0z"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.5507<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Battery"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/01f2sl"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.5194<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Power station"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/g/11x_bf0hsj"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.5193<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Ef Ecoflow Solar Generator 4000wh Delta Pro 3 Portable Solar"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/02mrp"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.498788983<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Electronics"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/018lqb"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.4666<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Kilowatt hour"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://images.fizz.hu/api/image/64ecb1e4-25f5-48c3-ae69-1afbdcbdc966.jpg?width=2000&height=2000&method=contain" target="_blank">https://images.fizz.hu/api/image/64ecb1e4-25f5-48c3-ae69-1afbdcbdc966.jpg?width=2000&height=2000&method=contain</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://s13emagst.akamaized.net/products/76723/76722370/images/res_99d03706e1cae5181ca023bbb3344491.png" target="_blank">https://s13emagst.akamaized.net/products/76723/76722370/images/res_99d03706e1cae5181ca023bbb3344491.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://lriker.ua/_next/image?url=%2Fassets%2F4cb713b4-39a9-4b38-b2b0-abe119d96447%2F%25D0%2597%25D0%25B0%25D1%2580%25D1%258F%25D0%25B4%25D0%25BD%25D0%25B0%2520%25D1%2581%25D1%2582%25D0%25B0%25D0%25BD%25D1%2586%25D1%2596%25D1%258F%2520EcoFlow%2520DELTA%2520Pro%25203%2520(2).jpg&w=3840&q=75" target="_blank">https://lriker.ua/_next/image?url=%2Fassets%2F4cb713b4-39a9-4b38-b2b0-abe119d96447%2F%25D0%2597%25D0%25B0%25D1%2580%25D1%258F%25D0%25B4%25D0%25BD%25D0%25B0%2520%25D1%2581%25D1%2582%25D0%25B0%25D0%25BD%25D1%2586%25D1%2596%25D1%258F%2520EcoFlow%2520DELTA%2520Pro%25203%2520(2).jpg&w=3840&q=75</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cdn.rubbermonkey.com/ProductImage/Huge/343692.jpg/ecoflow-delta-pro-3-portable-battery-generator.jpg?webp" target="_blank">https://cdn.rubbermonkey.com/ProductImage/Huge/343692.jpg/ecoflow-delta-pro-3-portable-battery-generator.jpg?webp</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://marketnet.ua/image/catalog/ecoflow/delta_pro_3/zaryadna-stantsiya-ecoflow-delta-pro-3-4096-vtg-4000-vt.jpg" target="_blank">https://marketnet.ua/image/catalog/ecoflow/delta_pro_3/zaryadna-stantsiya-ecoflow-delta-pro-3-4096-vtg-4000-vt.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://pos.nvncdn.com/68fa8b-42431/ps/20241029_vSL2cGtTBL.webp?v=1730193934" target="_blank">https://pos.nvncdn.com/68fa8b-42431/ps/20241029_vSL2cGtTBL.webp?v=1730193934</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://product.hstatic.net/1000340975/product/pro_3_3_d7d7d6474ac3495fb28b97da79a4ead5.jpg" target="_blank">https://product.hstatic.net/1000340975/product/pro_3_3_d7d7d6474ac3495fb28b97da79a4ead5.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://product.hstatic.net/1000340975/product/pro_3_3_d7d7d6474ac3495fb28b97da79a4ead5_master.jpg" target="_blank">https://product.hstatic.net/1000340975/product/pro_3_3_d7d7d6474ac3495fb28b97da79a4ead5_master.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://microless.com/cdn/products/ad4e4cc30c8b9620edfaf440fa9a7848-hi.jpg" target="_blank">https://microless.com/cdn/products/ad4e4cc30c8b9620edfaf440fa9a7848-hi.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.motoblok.biz/uploads/f4/3b/8be174c098e429ef6cff68c3f7203bf4.jpg" target="_blank">https://www.motoblok.biz/uploads/f4/3b/8be174c098e429ef6cff68c3f7203bf4.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://images.prom.ua/6316518118_w640_h640_6316518118.jpg" target="_blank">https://images.prom.ua/6316518118_w640_h640_6316518118.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://ecoflowukraine.com/content/images/23/536x400l50nn0/5000000226-97303180046807.jpg" target="_blank">https://ecoflowukraine.com/content/images/23/536x400l50nn0/5000000226-97303180046807.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://ireland.apollo.olxcdn.com/v1/files/u0eulwp6e4pj3-UA/image" target="_blank">https://ireland.apollo.olxcdn.com/v1/files/u0eulwp6e4pj3-UA/image</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://static.wixstatic.com/media/92f782_8a0beb6e74214cc59cd9ff2573505f77~mv2.webp/v1/fill/w_980,h_732,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/92f782_8a0beb6e74214cc59cd9ff2573505f77~mv2.webp" target="_blank">https://static.wixstatic.com/media/92f782_8a0beb6e74214cc59cd9ff2573505f77~mv2.webp/v1/fill/w_980,h_732,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/92f782_8a0beb6e74214cc59cd9ff2573505f77~mv2.webp</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://images.prom.ua/6316518118_w1280_h640_6316518118.jpg" target="_blank">https://images.prom.ua/6316518118_w1280_h640_6316518118.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://images.prom.ua/6279045426_w1280_h640_6279045426.jpg" target="_blank">https://images.prom.ua/6279045426_w1280_h640_6279045426.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://frankfurt.apollo.olxcdn.com/v1/files/010362jz6eio3-KZ/image" target="_blank">https://frankfurt.apollo.olxcdn.com/v1/files/010362jz6eio3-KZ/image</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://prime-pc.md/files/products/070427-1.800x600wn.jpg?c91600c6f39647b49bb7b1f102779a2f" target="_blank">https://prime-pc.md/files/products/070427-1.800x600wn.jpg?c91600c6f39647b49bb7b1f102779a2f</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://pos.nvncdn.com/3d97f1-13296/ps/content/20250319_84O81JWn.jpg" target="_blank">https://pos.nvncdn.com/3d97f1-13296/ps/content/20250319_84O81JWn.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://pos.nvncdn.com/3d97f1-13296/ps/20250319_oVRQ6Hn4em.jpeg?v=1742360243" target="_blank">https://pos.nvncdn.com/3d97f1-13296/ps/20250319_oVRQ6Hn4em.jpeg?v=1742360243</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.digitec.ch/en/s1/product/ecoflow-delta-pro-3-4096-wh-5150-kg-portable-power-stations-47951889" target="_blank">https://www.digitec.ch/en/s1/product/ecoflow-delta-pro-3-4096-wh-5150-kg-portable-power-stations-47951889</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow Delta Pro 3 - buy at Digitec"<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://static01.galaxus.com/productimages/7/6/9/1/2/3/2/0/5/7/1/7/2/7/9/7/8/2/0198e02d-e763-75d3-8b3f-46d98b8fb039_720.jpeg" target="_blank">https://static01.galaxus.com/productimages/7/6/9/1/2/3/2/0/5/7/1/7/2/7/9/7/8/2/0198e02d-e763-75d3-8b3f-46d98b8fb039_720.jpeg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.galaxus.ch/en/s4/product/ecoflow-delta-pro-3-4096-wh-5150-kg-portable-power-stations-47951889" target="_blank">https://www.galaxus.ch/en/s4/product/ecoflow-delta-pro-3-4096-wh-5150-kg-portable-power-stations-47951889</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow Delta Pro 3 - buy at Galaxus"<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://static01.galaxus.com/productimages/7/6/9/1/2/3/2/0/5/7/1/7/2/7/9/7/8/2/0198e02d-e763-75d3-8b3f-46d98b8fb039_720.jpeg" target="_blank">https://static01.galaxus.com/productimages/7/6/9/1/2/3/2/0/5/7/1/7/2/7/9/7/8/2/0198e02d-e763-75d3-8b3f-46d98b8fb039_720.jpeg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://megadron.pl/en/products/ecoflow-delta-pro-3-portable-power-station-30027.html" target="_blank">https://megadron.pl/en/products/ecoflow-delta-pro-3-portable-power-station-30027.html</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow DELTA Pro 3 portable power station - MegaDron"<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://static5.megadron.pl/hpeciai/86a43114e4d9f02beef0b8be75f78ecc/eng_pl_EcoFlow-DELTA-Pro-3-portable-power-station-30027_3.webp" target="_blank">https://static5.megadron.pl/hpeciai/86a43114e4d9f02beef0b8be75f78ecc/eng_pl_EcoFlow-DELTA-Pro-3-portable-power-station-30027_3.webp</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://ecoflowtech.co.nz/products/ecoflow-delta-pro-3" target="_blank">https://ecoflowtech.co.nz/products/ecoflow-delta-pro-3</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow DELTA Pro 3"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://ecoflowtech.co.nz/cdn/shop/files/5_b530b886-a25c-4e90-92b2-7c31044f3165_535x.webp?v=1754960923" target="_blank">https://ecoflowtech.co.nz/cdn/shop/files/5_b530b886-a25c-4e90-92b2-7c31044f3165_535x.webp?v=1754960923</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://offyourgrid.ie/product/ecoflow-delta-pro-3-power-station/" target="_blank">https://offyourgrid.ie/product/ecoflow-delta-pro-3-power-station/</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow DELTA Pro 3 Power Station 4000W | 4096Wh - Off Your Grid"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://offyourgrid.ie/wp-content/uploads/2024/09/ecoflow_delta_pro_3_side_front_angle.png" target="_blank">https://offyourgrid.ie/wp-content/uploads/2024/09/ecoflow_delta_pro_3_side_front_angle.png</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.sharegrid.com/losangeles/l/356527-ecoflow-delta-pro-3-portable-power-station" target="_blank">https://www.sharegrid.com/losangeles/l/356527-ecoflow-delta-pro-3-portable-power-station</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow DELTA Pro 3 Portable Power Station - ShareGrid"<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://d1rzxhvrtciqq1.cloudfront.net/uploads/images/listingimage/1276014/image/big-cec384cc650c6308fe0212179c3e8792.jpeg" target="_blank">https://d1rzxhvrtciqq1.cloudfront.net/uploads/images/listingimage/1276014/image/big-cec384cc650c6308fe0212179c3e8792.jpeg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://d1rzxhvrtciqq1.cloudfront.net/uploads/images/listingimage/1276014/image/thumb-9dfa1d28c5676e5d7f01d231cf018518.jpeg" target="_blank">https://d1rzxhvrtciqq1.cloudfront.net/uploads/images/listingimage/1276014/image/thumb-9dfa1d28c5676e5d7f01d231cf018518.jpeg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.earthtechproducts.com/ecoflow-delta-pro-3-powerstation-12kwh-kit.html" target="_blank">https://www.earthtechproducts.com/ecoflow-delta-pro-3-powerstation-12kwh-kit.html</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow Delta Pro 3 12 kWh Expansion Portable Power Station Kit"<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://s.turbifycdn.com/aah/yhst-99239380869547/ecoflow-delta-pro-3-12-kwh-expansion-portable-power-station-kit-46.png" target="_blank">https://s.turbifycdn.com/aah/yhst-99239380869547/ecoflow-delta-pro-3-12-kwh-expansion-portable-power-station-kit-46.png</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.burnsco.co.nz/ecoflow-delta-3-pro" target="_blank">https://www.burnsco.co.nz/ecoflow-delta-3-pro</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow Delta 3 Pro Power Station - Burnsco"<br>&nbsp;&nbsp;&nbsp;&nbsp;full_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.burnsco.co.nz/media/catalog/product/4/3/43796b_1727799744.jpeg?optimize=high&fit=bounds&height=840&width=840&canvas=840:840" target="_blank">https://www.burnsco.co.nz/media/catalog/product/4/3/43796b_1727799744.jpeg?optimize=high&fit=bounds&height=840&width=840&canvas=840:840</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.batteries.gr/en/ecoflow-delta-pro-3-smart-extra-battery.html" target="_blank">https://www.batteries.gr/en/ecoflow-delta-pro-3-smart-extra-battery.html</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow DELTA Pro 3 Smart Extra Battery"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.batteries.gr/media/catalog/product/e/c/ecoflow_delta_pro_3_smart_extra_8.jpg" target="_blank">https://www.batteries.gr/media/catalog/product/e/c/ecoflow_delta_pro_3_smart_extra_8.jpg</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;pages_with_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://offyourgrid.ie/product/ecoflow-delta-pro-3-power-station-alternator-charger/" target="_blank">https://offyourgrid.ie/product/ecoflow-delta-pro-3-power-station-alternator-charger/</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;page_title: "EcoFlow DELTA Pro 3 Power Station Kit - Off Your Grid"<br>&nbsp;&nbsp;&nbsp;&nbsp;partial_matching_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://offyourgrid.ie/wp-content/uploads/2024/09/ecoflow_delta_pro_3_side_front_angle.png" target="_blank">https://offyourgrid.ie/wp-content/uploads/2024/09/ecoflow_delta_pro_3_side_front_angle.png</a>"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1750952756-71a5EKu8L.jpg?crop=1xw:1.00xh;center,top&resize=980:*" target="_blank">https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1750952756-71a5EKu8L.jpg?crop=1xw:1.00xh;center,top&resize=980:*</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://i.ytimg.com/vi/5o1GQpDQTiI/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCvnv1-LeAwyu7nuCt4qhk4O3Fzjw" target="_blank">https://i.ytimg.com/vi/5o1GQpDQTiI/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCvnv1-LeAwyu7nuCt4qhk4O3Fzjw</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://konicaminolta.b-cdn.net/wp-content/uploads/2022/03/bizhub-650i_Img.png" target="_blank">https://konicaminolta.b-cdn.net/wp-content/uploads/2022/03/bizhub-650i_Img.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.corelaboratory.abbott/int/en/offerings/brands/alinity/_jcr_content/root/container_2028507328/columncontrol/tab_item_no_0/image_1010803262.coreimg.85.1024.jpeg/1740541175126/alinityc-450x450v2.jpeg" target="_blank">https://www.corelaboratory.abbott/int/en/offerings/brands/alinity/_jcr_content/root/container_2028507328/columncontrol/tab_item_no_0/image_1010803262.coreimg.85.1024.jpeg/1740541175126/alinityc-450x450v2.jpeg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://specials-images.forbesimg.com/imageserve/67cb670c2618f221512d79bb/Brother-HL-2460DW-XL/960x0.jpg?cropX1=46&cropX2=1004&cropY1=0&cropY2=718" target="_blank">https://specials-images.forbesimg.com/imageserve/67cb670c2618f221512d79bb/Brother-HL-2460DW-XL/960x0.jpg?cropX1=46&cropX2=1004&cropY1=0&cropY2=718</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://lexmark.scene7.com/is/image/lexmark/250108_homepage_enterprise?fmt=webp&resMode=sharp2&qlt=85,0&op_usm=1.75,0.3,2,0" target="_blank">https://lexmark.scene7.com/is/image/lexmark/250108_homepage_enterprise?fmt=webp&resMode=sharp2&qlt=85,0&op_usm=1.75,0.3,2,0</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://lexmark.scene7.com/is/image/lexmark/classic-line-4-5-series?fmt=webp-alpha&resMode=sharp2&qlt=85,0&op_usm=1.75,0.3,2,0" target="_blank">https://lexmark.scene7.com/is/image/lexmark/classic-line-4-5-series?fmt=webp-alpha&resMode=sharp2&qlt=85,0&op_usm=1.75,0.3,2,0</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.brother-usa.com/-/media/environmental/content-section-7_product-recycling.jpg?h=420&w=555&la=en&hash=07C4E3F0FE14B108C82078C05407048A" target="_blank">https://www.brother-usa.com/-/media/environmental/content-section-7_product-recycling.jpg?h=420&w=555&la=en&hash=07C4E3F0FE14B108C82078C05407048A</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://mediaserver.goepson.com/ImConvServlet/imconv/979a9873fe1c7c204f973da858d44c3be7e799b9/original?use=productpictures&hybrisId=B2C&assetDescr=pos-hub_fg_kiosk" target="_blank">https://mediaserver.goepson.com/ImConvServlet/imconv/979a9873fe1c7c204f973da858d44c3be7e799b9/original?use=productpictures&hybrisId=B2C&assetDescr=pos-hub_fg_kiosk</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://pisces.bbystatic.com/image2/BestBuy_US/images/products/b0958833-fd63-4221-bda1-2bb0b27c1581.jpg;maxHeight=427;maxWidth=640?format=webp" target="_blank">https://pisces.bbystatic.com/image2/BestBuy_US/images/products/b0958833-fd63-4221-bda1-2bb0b27c1581.jpg;maxHeight=427;maxWidth=640?format=webp</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "ecoflow delta pro 3 powerstation 4096 wh"<br>&nbsp;&nbsp;&nbsp;&nbsp;language_code: "en"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_Ecoflow.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_Ecoflow.jpg</a></div></td>
+      <td><div class="feature-box">PRODUCT SEARCH</div></td>
+      <td><div class="response-box">Tailored search engine answers : <br><br> Searched text:<br><br>-----&nbsp;&nbsp;ECOFLOW 23 8 1892 86 2386&nbsp;&nbsp;-----<br><br>Rezults:<br><br>-----Cauți ecoflow delta 3 plus? Alege din oferta eMAG.ro - <a href="https://www.emag.ro/search/ecoflow+delta+3+plus" target="_blank">https://www.emag.ro/search/ecoflow+delta+3+plus</a><br>Soluții Solare Portabile - EcoFlow Romania - <a href="https://ecoflowromania.ro/solutii-solare-portabile/" target="_blank">https://ecoflowromania.ro/solutii-solare-portabile/</a><br>Untitled - <a href="https://www.offgridtec.com/media/product_attachements/EcoFlow_DELTA-Pro-3_Powerstation_Benutzerhandbuch.pdf" target="_blank">https://www.offgridtec.com/media/product_attachements/EcoFlow_DELTA-Pro-3_Powerstation_Benutzerhandbuch.pdf</a><br>GENERADORES ECOFLOW TODOS LOS MODELOS ... - <a href="https://www.facebook.com/groups/372524807316639/posts/1508374440398331/" target="_blank">https://www.facebook.com/groups/372524807316639/posts/1508374440398331/</a><br>EcoFlow - Dronshop.ro | Magazinul de Drone | Ready to Fly? - <a href="https://dronshop.ro/ecoflow-romania" target="_blank">https://dronshop.ro/ecoflow-romania</a><br>Delta Pro 3 Solar Generator PV400W High Capacity | EcoFlow PH ... - <a href="https://ph.ecoflow.com/products/delta-pro-3-400w-portable-solar-panel" target="_blank">https://ph.ecoflow.com/products/delta-pro-3-400w-portable-solar-panel</a><br>Powerful Yet Simple: DELTA Pro 3 | EcoFlow Europe - <a href="https://eu.ecoflow.com/products/delta-pro-3-portable-power-station" target="_blank">https://eu.ecoflow.com/products/delta-pro-3-portable-power-station</a><br>EcoFlow DELTA Pro 3 Portable Power Station Ultra Power ... - <a href="https://ph.ecoflow.com/products/delta-pro-3-portable-power-station" target="_blank">https://ph.ecoflow.com/products/delta-pro-3-portable-power-station</a><br>DELTA Pro 3 accessories – EcoFlow Europe - <a href="https://eu.ecoflow.com/collections/delta-pro-3-accessories" target="_blank">https://eu.ecoflow.com/collections/delta-pro-3-accessories</a><br>Statie de alimentare portabila EcoFlow Delta Pro 3 4000W 4096Wh - <a href="https://www.generatoare-solare.ro/energie-portabila/baterie-externa-portabila-ecoflow-delta-pro-3-4000w-4096wh.html-----" target="_blank">https://www.generatoare-solare.ro/energie-portabila/baterie-externa-portabila-ecoflow-delta-pro-3-4000w-4096wh.html-----</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_Ecoflow_label.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_Ecoflow_label.jpg</a></div></td>
+      <td><div class="feature-box">TEXT_DETECTION</div></td>
+      <td><div class="response-box">ECOFLOW PRO</div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_Ecoflow_label.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_Ecoflow_label.jpg</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/0dwx7"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.356244534<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Logo"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/04sf9"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2832<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Meter"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://assets.sdcdn.io/_sb/f/1018472/1200x630/5af62c3018/meta-tag-image_1200x630.png" target="_blank">https://assets.sdcdn.io/_sb/f/1018472/1200x630/5af62c3018/meta-tag-image_1200x630.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.fairtrade.travel/wp-content/uploads/sites/31/2024/03/tom-ford.png" target="_blank">https://www.fairtrade.travel/wp-content/uploads/sites/31/2024/03/tom-ford.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://biofuture.com/wp-content/uploads/2023/07/BioWorld.png" target="_blank">https://biofuture.com/wp-content/uploads/2023/07/BioWorld.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://lookaside.fbsbx.com/lookaside/crawler/instagram/showpo/profile_pic.jpg" target="_blank">https://lookaside.fbsbx.com/lookaside/crawler/instagram/showpo/profile_pic.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.atmosfair.de/wp-content/uploads/good-travel-logo.png" target="_blank">https://www.atmosfair.de/wp-content/uploads/good-travel-logo.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://assets.rbl.ms/33405941/origin.png" target="_blank">https://assets.rbl.ms/33405941/origin.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://lookaside.fbsbx.com/lookaside/crawler/instagram/acrylicrobotics/profile_pic.jpg" target="_blank">https://lookaside.fbsbx.com/lookaside/crawler/instagram/acrylicrobotics/profile_pic.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://images.themall.aucklandairport.co.nz/drupal/aEItbfIYD2v8zgZf8W7ah4hoIaVDVQjrsQHeKL3j5vE/670x/czNmcy1wdWJsaWMvMjAyNS0wNi9GcmFtZTEucG5n" target="_blank">https://images.themall.aucklandairport.co.nz/drupal/aEItbfIYD2v8zgZf8W7ah4hoIaVDVQjrsQHeKL3j5vE/670x/czNmcy1wdWJsaWMvMjAyNS0wNi9GcmFtZTEucG5n</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.fundacionbankinter.org/wp-content/uploads/2024/01/technologies2487_64be38d3d5a14_Flowboxlogofullsqare.png" target="_blank">https://www.fundacionbankinter.org/wp-content/uploads/2024/01/technologies2487_64be38d3d5a14_Flowboxlogofullsqare.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://operationhope.org/wp-content/uploads/2024/02/randy-doroff.png" target="_blank">https://operationhope.org/wp-content/uploads/2024/02/randy-doroff.png</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "graphics"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_Ecoflow_label.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_Ecoflow_label.jpg</a></div></td>
+      <td><div class="feature-box">PRODUCT SEARCH</div></td>
+      <td><div class="response-box">Tailored search engine answers : <br><br> Searched text:<br><br>-----&nbsp;&nbsp;ECOFLOW PRO&nbsp;&nbsp;-----<br><br>Rezults:<br><br>-----Power Station Delta Pro - EcoFlow Romania - <a href="https://ecoflowromania.ro/c/power-station-uri/power-station-uri-ecoflow-delta-pro/" target="_blank">https://ecoflowromania.ro/c/power-station-uri/power-station-uri-ecoflow-delta-pro/</a><br>Statie incarcare ECOFLOW Delta 3 Pro, 4096 Wh, 4000W, USB C ... - <a href="https://altex.ro/statie-incarcare-ecoflow-delta-3-pro-4096-wh-4000w-usb-c-schuko-gri/cpd/INCEFDELTAPRO3/" target="_blank">https://altex.ro/statie-incarcare-ecoflow-delta-3-pro-4096-wh-4000w-usb-c-schuko-gri/cpd/INCEFDELTAPRO3/</a><br>Power Station Delta Pro 3600 Wh - EcoFlow Romania - <a href="https://ecoflowromania.ro/p/power-station-ecoflow-delta-pro-3600-wh/" target="_blank">https://ecoflowromania.ro/p/power-station-ecoflow-delta-pro-3600-wh/</a><br>Statie de alimentare portabila EcoFlow DELTA Pro, 3600 Wh, (48V ... - <a href="https://www.emag.ro/statie-de-alimentare-portabila-ecoflow-delta-pro-3600-wh-48v-75ah-gri-deltapro-1600w-eu/pd/DFRQ7LMBM/" target="_blank">https://www.emag.ro/statie-de-alimentare-portabila-ecoflow-delta-pro-3600-wh-48v-75ah-gri-deltapro-1600w-eu/pd/DFRQ7LMBM/</a><br>EcoFlow DELTA Pro Portable Power Station – EcoFlow Europe - <a href="https://eu.ecoflow.com/products/delta-pro-portable-power-station" target="_blank">https://eu.ecoflow.com/products/delta-pro-portable-power-station</a><br>EcoFlow Delta Pro (DELTAPRO-1600W-EU) (Generator) - Preturi - <a href="https://generator.compari.ro/ecoflow/delta-pro-deltapro-1600w-eu-p760288137/" target="_blank">https://generator.compari.ro/ecoflow/delta-pro-deltapro-1600w-eu-p760288137/</a><br>Buy EcoFlow DELTA Pro Portable Power Station - <a href="https://us.ecoflow.com/products/delta-pro-portable-power-station" target="_blank">https://us.ecoflow.com/products/delta-pro-portable-power-station</a><br>Buy EcoFlow DELTA Pro Portable Power Station - <a href="https://ca.ecoflow.com/products/delta-pro-portable-power-station" target="_blank">https://ca.ecoflow.com/products/delta-pro-portable-power-station</a><br>Buy EcoFlow DELTA Pro Portable Power Station — EcoFlow UK ... - <a href="https://uk.ecoflow.com/products/delta-pro-portable-power-station" target="_blank">https://uk.ecoflow.com/products/delta-pro-portable-power-station</a><br>EcoFlow DELTA Pro Portable Power Station | EcoFlow US | EcoFlow ... - <a href="https://www.ecoflow.com/us/delta-pro-portable-power-station-----" target="_blank">https://www.ecoflow.com/us/delta-pro-portable-power-station-----</a></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+  </tbody>
+</table>
+    </body>
+    </html>
+    

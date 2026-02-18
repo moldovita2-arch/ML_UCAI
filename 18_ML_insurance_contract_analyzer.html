@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Insurance Contract Analyzer Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    h1 { color: #333; }
+
+    #feedback { margin-top: 20px; background: #5856ee;}
+    .chunk { padding: 5px; margin-bottom: 5px; border-radius: 4px; }
+    .HighRiskLiability { background-color: #f8d7da; color: #721c24; }
+    .Safe { background-color: #d4edda; color: #155724; }
+    .MissingCoverage { background-color: #fff3cd; color: #856404; }
+
+
+    .Buttoncontainer {
+      display: flex;          /* horizontal layout */
+      gap: 10px;              /* space between buttons */
+      margin-top: 10px;
+    }
+  </style>
+  <link rel="stylesheet" href="style_adversarial.css">
+</head>
+<body>
+  <h1>Insurance Contract Analyzer Demo</h1>
+  <input type="file" id="fileInput">
+
+<div class="Buttoncontainer"></div>
+    <!button onclick="document.getElementById('fileInput').click()"></button>
+    <button onclick="analyze()">Analyze document</button>
+</div>
+  
+  <h3>Feedback:</h3>
+  <div id="feedback"></div>
+
+  <script>
+            async function analyze() {
+              const file = document.getElementById("fileInput").files[0];
+              if (!file) {
+                alert("Please select a file");
+                return;
+              }
+
+              const formData = new FormData();
+              formData.append("file", file);
+
+              document.getElementById("feedback").innerHTML = "<i>Analyzing...</i>";
+
+              try {
+                const response = await fetch("https://carline-unchiselled-superlaryngeally.ngrok-free.dev/analyze", {
+                  method: "POST",
+                  body: formData
+                });
+
+                if (!response.ok) {
+                  // Try to read backend error message
+                  let errMsg = `Server error: ${response.status}`;
+                  try {
+                    const errData = await response.json();
+                    if (errData.detail) errMsg = errData.detail;
+                  } catch (_) {}
+                  throw new Error(errMsg);
+                }
+
+                const data = await response.json();
+
+                let html = `<b>Overall Feedback:</b> ${data.feedback}<br><br>`;
+                html += `<b>Per-chunk Results:</b><br>`;
+                data.chunk_results.forEach((r, i) => {
+                  html += `
+                    <div class="chunk ${r}">
+                      <b>Chunk ${i + 1}: ${r}</b>
+                      <div style="max-height:150px; overflow:auto; background:#f9f9f9; padding:6px; border:1px solid #ccc; border-radius:4px;">
+                        <pre>${data.chunk_texts[i]}</pre>
+                      </div>
+                    </div>`;
+                });
+                html += `<h3>Full Extracted Text:</h3>
+                  <div style="max-height:200px; overflow:auto; background:#f4f4f4; color: #333; ; padding:10px; border-radius:5px;">
+                    <pre>${data.full_text}</pre>
+                  </div>`;
+
+                document.getElementById("feedback").innerHTML = html;
+
+              } catch (err) {
+                document.getElementById("feedback").innerHTML = `
+                  <div style="
+                    color:#721c24;
+                    background:#f8d7da;
+                    border:1px solid #f5c6cb;
+                    padding:10px;
+                    border-radius:4px;
+                    max-width:300px;
+                  ">
+                    <b>Error:</b> ${err.message}
+                  </div>`;
+              }
+
+            }
+
+  </script>
+</body>
+</html>

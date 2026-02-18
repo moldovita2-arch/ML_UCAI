@@ -1,0 +1,261 @@
+
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>Vision API Responses</title>
+    <style>
+        body {
+            background-color: #15294b;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 40%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            background-color: #22a;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        table.dataframe {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.dataframe th, table.dataframe td {
+            border: 1px solid #339;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.dataframe th {
+            background-color:#1e293b;
+            color: #e2e8f0;
+        }
+         .file-box, .feature-box, .response-box, .error-box-success, error-box-error {
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: center;
+            max-height: 200px;
+            min-height : 20px;
+            max-width : 20%;
+            min-width : 100px;
+            border-radius: 30px;
+        }
+        .file-box {
+            background-color:#0f172a;
+            #color: #0f172a;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+            hover:border-color: #0078d7;
+            border-radius: 10px;
+			font-size: 20px;
+			max-width : 80ch;
+			max-height: 3ch;
+			min-width : 50ch;
+			min-height: 3ch;
+		    font-size: 16px;
+			text-align:center;
+        }
+        .file-box a {
+            color: #0f172a;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+			text-align:center;
+            
+        }
+
+        .file-box a:hover {
+            border-color: #0078d7;
+            border-radius: 30px;
+			max-width : 80ch;
+			max-height: 1ch;
+			min-width : 50ch;
+			min-height: 1ch;
+		    font-size: 16px;
+            
+        }
+        .feature-box {
+            background-color: #369;
+            border-radius: 30px;
+			text-align: center;
+			max-width : 30ch;
+			max-height: 20ch;
+			min-width : 20ch;
+			min-height: 2ch;
+		    font-size: 16px;
+        }
+        .response-box {
+            background-color: #369;
+            border-radius: 10px;
+			max-width : 140ch;
+			max-height: 40ch;
+			min-width : 10ch;
+			min-height: 4ch;
+		    font-size: 16px;
+			text-align: left;
+        }
+        .error-box-error {
+            background-color: #aa1111;
+            border-radius: 30px;
+            font-size: 12px;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .error-box-success {
+        background-color: #11aa11;
+        }
+
+
+        .object-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: down;
+        text-align: center;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+		
+	     .face-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height :80px;
+        max-width : 140px;
+        min-width : 80px;
+        }
+	
+        .text-thumb{
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 200px;
+        min-height : 80px;
+        max-width : 140px;
+        min-width : 100px;
+        }
+
+        .logo-thumb {
+        overflow-y: auto;
+        border-radius: 30px;
+        background-color: #369;
+        horizontal-align: center;
+        vertical-align: center;
+        text-align: center;
+        border-color: yellow;
+        max-height: 400px;
+        min-height : 80px;
+        max-width : 120px;
+        min-width : 80px;
+        }
+        .default-box {
+            background-color: #369;
+            color: #e8e8e8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        function searchTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var rows = document.querySelectorAll("table.dataframe tbody tr");
+
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+            });
+        }
+    </script>
+ 
+    </head>
+
+    <body>
+        <h2>🔍 Vision API Responses Viewer</h2>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Introdu paramaterii de filtrare date...">
+        <table border="1" class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>file</th>
+      <th>feature_type</th>
+      <th>response</th>
+      <th>error</th>
+      <th>logo_preview</th>
+      <th>face_preview</th>
+      <th>object_preview</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_explicit.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">1_explicit.jpg</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/05p37dx"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.428913057<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "LED-backlit LCD"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/04myn"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3696<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Light-emitting diode"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/04k6c"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3366<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Liquid-crystal display"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/03sxb_"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.318<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Backlight"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/03gpl8"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3017<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Model M keyboard"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/029zz6"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2477<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Display device"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Taylor_Swift_2_-_2019_by_Glenn_Francis_%28cropped%29_3.jpg/250px-Taylor_Swift_2_-_2019_by_Glenn_Francis_%28cropped%29_3.jpg" target="_blank">https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Taylor_Swift_2_-_2019_by_Glenn_Francis_%28cropped%29_3.jpg/250px-Taylor_Swift_2_-_2019_by_Glenn_Francis_%28cropped%29_3.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://asset.dr.dk/drlyd/images/urn:dr:radio:image:685283599b0d242d0f05ad5f?im=AspectCrop%3D%28720%2C720%29%2CxPosition%3D.5%2CyPosition%3D.5%3BResize%3D%28720%2C720%29" target="_blank">https://asset.dr.dk/drlyd/images/urn:dr:radio:image:685283599b0d242d0f05ad5f?im=AspectCrop%3D%28720%2C720%29%2CxPosition%3D.5%2CyPosition%3D.5%3BResize%3D%28720%2C720%29</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Taylor_Swift_2019_by_Glenn_Francis.jpg/250px-Taylor_Swift_2019_by_Glenn_Francis.jpg" target="_blank">https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Taylor_Swift_2019_by_Glenn_Francis.jpg/250px-Taylor_Swift_2019_by_Glenn_Francis.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.tasteofhome.com/wp-content/uploads/2025/10/Glamorous-Cocktails-to-Celebrate-Your-Showgirl-Era_GettyImages-2197310482_FT.jpg" target="_blank">https://www.tasteofhome.com/wp-content/uploads/2025/10/Glamorous-Cocktails-to-Celebrate-Your-Showgirl-Era_GettyImages-2197310482_FT.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cdn01.justjared.com/wp-content/uploads/headlines/2025/08/taylor-swift-mahomes-call.jpg" target="_blank">https://cdn01.justjared.com/wp-content/uploads/headlines/2025/08/taylor-swift-mahomes-call.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://pluggedin.ru/images/12-file_2024_02_26_10_04_27.jpg" target="_blank">https://pluggedin.ru/images/12-file_2024_02_26_10_04_27.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2023/01/1200/675/GettyImages-1184285944.jpg?ve=1&tl=1" target="_blank">https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2023/01/1200/675/GettyImages-1184285944.jpg?ve=1&tl=1</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.thetimes.com/imageserver/image/%2Feaa3e3c6-fdaa-4861-90cd-3131a8e9271a.jpg?crop=2938%2C4407%2C1909%2C0" target="_blank">https://www.thetimes.com/imageserver/image/%2Feaa3e3c6-fdaa-4861-90cd-3131a8e9271a.jpg?crop=2938%2C4407%2C1909%2C0</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://s.france24.com/media/display/466bbde6-9f45-11f0-ad06-005056bf30b7/w:1280/p:3x4/105de474561444859749c0a1e22fcd8606e84502.jpg" target="_blank">https://s.france24.com/media/display/466bbde6-9f45-11f0-ad06-005056bf30b7/w:1280/p:3x4/105de474561444859749c0a1e22fcd8606e84502.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://static.toiimg.com/thumb/msid-117830116,width-1280,height-720,resizemode-4/117830116.jpg" target="_blank">https://static.toiimg.com/thumb/msid-117830116,width-1280,height-720,resizemode-4/117830116.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "led-backlit lcd display"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/1_explicit.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">1_explicit.jpg</a></div></td>
+      <td><div class="feature-box">SAFE_SEARCH_DETECTION</div></td>
+      <td><div class="response-box">safe_search_annotation {<br>&nbsp;&nbsp;adult: POSSIBLE<br>&nbsp;&nbsp;spoof: VERY_UNLIKELY<br>&nbsp;&nbsp;medical: UNLIKELY<br>&nbsp;&nbsp;violence: UNLIKELY<br>&nbsp;&nbsp;racy: VERY_LIKELY<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_explicit.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_explicit.jpg</a></div></td>
+      <td><div class="feature-box">WEB_DETECTION</div></td>
+      <td><div class="response-box">web_detection {<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/05wkw"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.4103<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Photography"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/0vpvbv7"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3324<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Fine-art nude photography"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/03gpl8"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3096<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Model M keyboard"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/05k21"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.3061<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Nudity"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;web_entities {<br>&nbsp;&nbsp;&nbsp;&nbsp;entity_id: "/m/09j1x"<br>&nbsp;&nbsp;&nbsp;&nbsp;score: 0.2868<br>&nbsp;&nbsp;&nbsp;&nbsp;description: "Underwear"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://imagenes.20minutos.es/files/image_1920_1080/uploads/imagenes/2025/02/13/uno-de-cada-cuatro-espanoles-no-se-protege-frente-a-las-infecciones-de-transmision-sexual.jpeg" target="_blank">https://imagenes.20minutos.es/files/image_1920_1080/uploads/imagenes/2025/02/13/uno-de-cada-cuatro-espanoles-no-se-protege-frente-a-las-infecciones-de-transmision-sexual.jpeg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://e01-elmundo.uecdn.es/assets/multimedia/imagenes/2025/04/11/17443768219859.jpg" target="_blank">https://e01-elmundo.uecdn.es/assets/multimedia/imagenes/2025/04/11/17443768219859.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://cdn4.suspilne.media/images/resize/400x1.78/b04f8e85b0612318.jpg" target="_blank">https://cdn4.suspilne.media/images/resize/400x1.78/b04f8e85b0612318.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://media.assettype.com/gulfnews%2F2024-11-19%2Fie8y1i8v%2FPerson_190dab438a1_original_ratio.jpg" target="_blank">https://media.assettype.com/gulfnews%2F2024-11-19%2Fie8y1i8v%2FPerson_190dab438a1_original_ratio.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://assets.newsweek.com/wp-content/uploads/2025/08/1779417-micro-cheating-cheating-relationships-marriage.jpg" target="_blank">https://assets.newsweek.com/wp-content/uploads/2025/08/1779417-micro-cheating-cheating-relationships-marriage.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://doula.org.uk/storage/asset/YXNzZXRzL2hhbm5haGJwaG90b2dyYXBoeXVrLTk4MjQtKDIpLmpwZw/hannahbphotographyuk-9824-%282%29.jpg?p=hero&fit=crop&s=a74572dc0783f6e599c9fce60b440723" target="_blank">https://doula.org.uk/storage/asset/YXNzZXRzL2hhbm5haGJwaG90b2dyYXBoeXVrLTk4MjQtKDIpLmpwZw/hannahbphotographyuk-9824-%282%29.jpg?p=hero&fit=crop&s=a74572dc0783f6e599c9fce60b440723</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="http://media.newyorker.com/photos/62069c30f4f4fa7c8b575f53/master/pass/carucci_promo.jpg" target="_blank">http://media.newyorker.com/photos/62069c30f4f4fa7c8b575f53/master/pass/carucci_promo.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://image.stern.de/35716020/t/wU/v2/w480/r1.5/-/porno-konsum.jpg" target="_blank">https://image.stern.de/35716020/t/wU/v2/w480/r1.5/-/porno-konsum.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://www.filmdienst.de/bild/filmdb/308274" target="_blank">https://www.filmdienst.de/bild/filmdb/308274</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;visually_similar_images {<br>&nbsp;&nbsp;&nbsp;&nbsp;url: "<a href="https://another.place/storage/sections/cards/f0166eac-b885-4674-87d8-92813834e20e.jpg" target="_blank">https://another.place/storage/sections/cards/f0166eac-b885-4674-87d8-92813834e20e.jpg</a>"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;best_guess_labels {<br>&nbsp;&nbsp;&nbsp;&nbsp;label: "nude photography"<br>&nbsp;&nbsp;}<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+    <tr>
+      <td><div class="file-box"><a href="Data/2_explicit.jpg" target="_blank" style="color:#1E90FF; text-decoration:none;">2_explicit.jpg</a></div></td>
+      <td><div class="feature-box">SAFE_SEARCH_DETECTION</div></td>
+      <td><div class="response-box">safe_search_annotation {<br>&nbsp;&nbsp;adult: LIKELY<br>&nbsp;&nbsp;spoof: VERY_UNLIKELY<br>&nbsp;&nbsp;medical: UNLIKELY<br>&nbsp;&nbsp;violence: UNLIKELY<br>&nbsp;&nbsp;racy: VERY_LIKELY<br>}<br></div></td>
+      <td><div class="error-box-success"></div></td>
+      <td><div class="logo-thumb"></div></td>
+      <td><div class="face-thumb"></div></td>
+      <td><div class="object-thumb"></div></td>
+    </tr>
+  </tbody>
+</table>
+    </body>
+    </html>
+    
